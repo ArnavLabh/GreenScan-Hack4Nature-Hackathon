@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Scan Product Barcode</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Scanner Container -->
+                    <div id="reader" class="mb-4" style="width: 100%; max-width: 600px; margin: 0 auto;"></div>
+                    
+                    <!-- Manual Upload Section -->
+                    <div class="text-center mb-4">
+                        <p class="text-muted">Or upload a photo of the barcode</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <button class="btn btn-success" onclick="document.getElementById('barcodeImage').click()">
+                                <i class="fas fa-camera"></i> Take Photo
+                            </button>
+                            <button class="btn btn-outline-success" onclick="document.getElementById('barcodeImage').click()">
+                                <i class="fas fa-upload"></i> Upload Image
+                            </button>
+                        </div>
+                        <input type="file" id="barcodeImage" accept="image/*" capture="environment" class="d-none" onchange="handleImageUpload(event)">
+                    </div>
+
+                    <!-- Manual Entry Section -->
+                    <div class="text-center">
+                        <p class="text-muted">Or enter barcode manually</p>
+                        <form action="{{ url_for('result') }}" method="post" class="d-flex justify-content-center gap-2">
+                            <input type="text" name="barcode" class="form-control" style="max-width: 200px;" placeholder="Enter barcode">
+                            <button type="submit" class="btn btn-success">Search</button>
+                        </form>
+                    </div>
+
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="text-center mt-4 d-none">
+                        <div class="spinner"></div>
+                        <p class="mt-2">Processing image...</p>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
+                </div>
+            </div>
+
+            <!-- Tips Card -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Scanning Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <i class="fas fa-lightbulb text-warning me-2"></i>
+                            Ensure good lighting for better scanning
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-hand-pointer text-warning me-2"></i>
+                            Hold the barcode steady and parallel to the camera
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-camera text-warning me-2"></i>
+                            Keep the barcode within the scanning frame
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-sync text-warning me-2"></i>
+                            Try different angles if scanning fails
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+    let html5QrcodeScanner = null;
+    let isScanning = false;
+
+    async function startScanner() {
+        try {
+            const devices = await Html5Qrcode.getCameras();
+            if (devices && devices.length) {
+                const cameraId = devices[0].id;
+                html5QrcodeScanner = new Html5Qrcode("reader");
+                
+                const config = {
+                    fps: 10,
+                    qrbox: { width: 250, height: 250 },
+                    aspectRatio: 1.0,
+                    formatsToSupport: [ Html5QrcodeSupportedFormats.EAN_13, 
+                                     Html5QrcodeSupportedFormats.UPC_A,
+                                     Html5QrcodeSupportedFormats.UPC_E,
+                                     Html5QrcodeSupportedFormats.EAN_8,
+                                     Html5QrcodeSupportedFormats.CODE_128,
+                                     Html5QrcodeSupportedFormats.CODE_39,
+                                     Html5QrcodeSupportedFormats.CODABAR ]
+                };
+
+                await html5QrcodeScanner.start(
+                    cameraId,
+                    config,
+                    onScanSuccess,
+                    onScanFailure
+                );
+                isScanning = true;
+            } else {
+                showError("No camera found. Please check your camera permissions.");
+            }
+        } catch (err) {
+            showError("Failed to start scanner: " + err.message);
+        }
+    }
+
+    function stopScanner() {
+        if (html5QrcodeScanner && isScanning) {
+            html5QrcodeScanner.stop().then(() => {
+                isScanning = false;
+            }).catch(err => {
+                console.error("Failed to stop scanner:", err);
+            });
+        }
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        // Stop the scanner
+        stopScanner();
+        
+        // Show loading indicator
+        document.getElementById('loadingIndicator').classList.remove('d-none');
+        
+        // Submit the form with the scanned barcode
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ url_for('result') }}";
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'barcode';
+        input.value = decodedText;
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function onScanFailure(error) {
+        // Only show error if we're not already showing one
+        if (!document.getElementById('errorMessage').classList.contains('d-none')) {
+            return;
+        }
+        showError("Scanning failed. Please try again.");
+    }
+
+    function showError(message) {
+        const errorMessage = document.getElementById('errorMessage');
+        errorMessage.textContent = message;
+        errorMessage.classList.remove('d-none');
+        setTimeout(() => {
+            errorMessage.classList.add('d-none');
+        }, 5000);
+    }
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Show loading indicator
+        document.getElementById('loadingIndicator').classList.remove('d-none');
+        document.getElementById('errorMessage').classList.add('d-none');
+
+        // Create a new instance of Html5Qrcode
+        const html5QrCode = new Html5Qrcode("reader");
+        
+        // Read the file
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const imageData = e.target.result;
+            
+            // Scan the image
+            html5QrCode.scanFile(imageData, true)
+                .then(decodedText => {
+                    // Stop the scanner
+                    html5QrCode.stop();
+                    
+                    // Submit the form with the scanned barcode
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = "{{ url_for('result') }}";
+                    
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'barcode';
+                    input.value = decodedText;
+                    
+                    form.appendChild(input);
+                    document.body.appendChild(form);
+                    form.submit();
+                })
+                .catch(err => {
+                    // Hide loading indicator
+                    document.getElementById('loadingIndicator').classList.add('d-none');
+                    
+                    // Show error message
+                    showError('Could not detect barcode in the image. Please try again.');
+                    
+                    // Stop the scanner
+                    html5QrCode.stop();
+                });
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Initialize the scanner when the page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        startScanner();
+    });
+
+    // Clean up when leaving the page
+    window.addEventListener('beforeunload', function() {
+        stopScanner();
+    });
+</script>
+{% endblock %}

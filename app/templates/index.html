@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row align-items-center min-vh-75">
+    <div class="col-md-6">
+        <h1 class="display-4 mb-4">Make Recycling Smarter with GreenScan</h1>
+        <p class="lead mb-4">Scan product barcodes to get instant recycling instructions, environmental impact assessment, and sustainable alternatives.</p>
+        <div class="d-grid gap-2 d-md-flex">
+            <a href="{{ url_for('scan') }}" class="btn btn-success btn-lg">
+                <i class="fas fa-barcode me-2"></i>Start Scanning
+            </a>
+            <button class="btn btn-outline-success btn-lg" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
+                <i class="fas fa-info-circle me-2"></i>How It Works
+            </button>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <img src="{{ url_for('static', filename='images/recycling-illustration.svg') }}" alt="Recycling Illustration" class="img-fluid">
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4">Why Choose GreenScan?</h2>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-bolt text-success fa-3x mb-3"></i>
+                <h3 class="h5">Instant Results</h3>
+                <p>Get immediate recycling instructions and environmental impact assessment with a simple scan.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-leaf text-success fa-3x mb-3"></i>
+                <h3 class="h5">Eco-Friendly Tips</h3>
+                <p>Discover sustainable alternatives and best practices for recycling different materials.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line text-success fa-3x mb-3"></i>
+                <h3 class="h5">Track Progress</h3>
+                <p>Monitor your recycling habits and environmental impact over time.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Modal -->
+<div class="modal fade" id="howItWorksModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">How GreenScan Works</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <i class="fas fa-barcode fa-3x text-success mb-3"></i>
+                        <h6>1. Scan Barcode</h6>
+                        <p>Use your device's camera to scan any product barcode</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <i class="fas fa-search fa-3x text-success mb-3"></i>
+                        <h6>2. Get Information</h6>
+                        <p>Receive detailed recycling instructions and environmental impact</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <i class="fas fa-lightbulb fa-3x text-success mb-3"></i>
+                        <h6>3. Learn & Improve</h6>
+                        <p>Discover sustainable alternatives and best practices</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

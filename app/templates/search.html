@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-8 mx-auto">
+            <form action="{{ url_for('search') }}" method="get" class="d-flex gap-2">
+                <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ query }}">
+                <select name="category" class="form-select" style="max-width: 200px;">
+                    <option value="">All Categories</option>
+                    <option value="Plastic" {% if category == 'Plastic' %}selected{% endif %}>Plastic</option>
+                    <option value="Glass" {% if category == 'Glass' %}selected{% endif %}>Glass</option>
+                    <option value="Metal" {% if category == 'Metal' %}selected{% endif %}>Metal</option>
+                    <option value="Paper" {% if category == 'Paper' %}selected{% endif %}>Paper</option>
+                </select>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-search me-2"></i>Search
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                {% if query and category %}
+                    Search results for "{{ query }}" in {{ category }}
+                {% elif query %}
+                    Search results for "{{ query }}"
+                {% elif category %}
+                    Products in {{ category }}
+                {% else %}
+                    All Products
+                {% endif %}
+                <small class="text-muted">({{ products|length }} items)</small>
+            </h2>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for product in products %}
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm">
+                <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <span class="badge bg-{{ 'success' if product.environmental_impact == 'Low' else 'warning' if product.environmental_impact == 'Medium' else 'danger' }} mb-2">
+                        {{ product.environmental_impact }} Impact
+                    </span>
+                    <p class="card-text">{{ product.instructions }}</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">{{ product.category }}</small>
+                        <a href="{{ url_for('result', barcode=product.barcode) }}" class="btn btn-outline-success btn-sm">
+                            <i class="fas fa-info-circle me-1"></i>Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-3x text-muted mb-3"></i>
+            <h3>No products found</h3>
+            <p class="text-muted">Try adjusting your search or filter criteria</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listener to category select
+    const categorySelect = document.querySelector('select[name="category"]');
+    categorySelect.addEventListener('change', function() {
+        this.form.submit();
+    });
+});
+</script>
+{% endblock %} 

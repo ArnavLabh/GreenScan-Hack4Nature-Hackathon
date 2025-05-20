@@ -1,0 +1,192 @@
+[
+    {
+        "barcode": "8906017290033",
+        "name": "Bisleri Mineral Water Bottle",
+        "category": "Plastic",
+        "instructions": "Rinse and recycle with plastics",
+        "environmental_impact": "High",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Remove cap and label",
+            "Rinse thoroughly",
+            "Flatten to save space",
+            "Check local recycling guidelines"
+        ],
+        "alternative_products": [
+            "Reusable stainless steel bottle",
+            "Glass water bottle",
+            "BPA-free reusable plastic bottle"
+        ]
+    },
+    {
+        "barcode": "8901012000022",
+        "name": "Lay's Classic Potato Chips",
+        "category": "Plastic",
+        "instructions": "Clean and recycle with plastic films",
+        "environmental_impact": "High",
+        "image_url": "https://m.media-amazon.com/images/I/81vJyb43URL._SL1500_.jpg",
+        "recycling_tips": [
+            "Clean thoroughly",
+            "Remove any food residue",
+            "Check local recycling guidelines",
+            "Consider upcycling"
+        ],
+        "alternative_products": [
+            "Homemade chips",
+            "Bulk snacks in reusable containers",
+            "Snacks in paper packaging"
+        ]
+    },
+    {
+        "barcode": "8901012000039",
+        "name": "Coca-Cola Glass Bottle",
+        "category": "Glass",
+        "instructions": "Return to store or recycle with glass",
+        "environmental_impact": "Low",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Remove metal cap",
+            "Rinse thoroughly",
+            "Check for cracks",
+            "Return to store if possible"
+        ],
+        "alternative_products": [
+            "Aluminum cans",
+            "Plastic bottles (recyclable)",
+            "Reusable water bottle"
+        ]
+    },
+    {
+        "barcode": "8901012000046",
+        "name": "Amul Milk Tetra Pack",
+        "category": "Paper",
+        "instructions": "Rinse and recycle with paper products",
+        "environmental_impact": "Medium",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Rinse thoroughly",
+            "Flatten completely",
+            "Remove plastic cap",
+            "Check local recycling guidelines"
+        ],
+        "alternative_products": [
+            "Glass milk bottles",
+            "Reusable containers",
+            "Local milk delivery"
+        ]
+    },
+    {
+        "barcode": "8901012000053",
+        "name": "Maggi Noodles Pack",
+        "category": "Plastic",
+        "instructions": "Clean and recycle with plastics",
+        "environmental_impact": "Medium",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Clean thoroughly",
+            "Remove any food residue",
+            "Check recycling number",
+            "Consider upcycling"
+        ],
+        "alternative_products": [
+            "Fresh noodles",
+            "Homemade noodles",
+            "Bulk pasta in paper packaging"
+        ]
+    },
+    {
+        "barcode": "8901012000060",
+        "name": "Parle-G Biscuit Pack",
+        "category": "Plastic",
+        "instructions": "Clean and recycle with plastics",
+        "environmental_impact": "Medium",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Clean thoroughly",
+            "Remove any food residue",
+            "Check recycling number",
+            "Consider upcycling"
+        ],
+        "alternative_products": [
+            "Homemade cookies",
+            "Bulk cookies in reusable containers",
+            "Cookies in paper packaging"
+        ]
+    },
+    {
+        "barcode": "8901012000077",
+        "name": "Dabur Honey Glass Jar",
+        "category": "Glass",
+        "instructions": "Clean and recycle with glass",
+        "environmental_impact": "Low",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Remove metal lid",
+            "Clean thoroughly",
+            "Remove label if possible",
+            "Consider upcycling"
+        ],
+        "alternative_products": [
+            "Local honey in reusable containers",
+            "Bulk honey in glass jars",
+            "Honey in paper packaging"
+        ]
+    },
+    {
+        "barcode": "8901012000084",
+        "name": "Kurkure Snack Pack",
+        "category": "Plastic",
+        "instructions": "Clean and recycle with plastic films",
+        "environmental_impact": "High",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Clean thoroughly",
+            "Remove any food residue",
+            "Check local recycling guidelines",
+            "Consider upcycling"
+        ],
+        "alternative_products": [
+            "Homemade snacks",
+            "Bulk snacks in reusable containers",
+            "Snacks in paper packaging"
+        ]
+    },
+    {
+        "barcode": "8901012000091",
+        "name": "Amul Butter Paper Pack",
+        "category": "Paper",
+        "instructions": "Clean and recycle with paper products",
+        "environmental_impact": "Low",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Remove any food residue",
+            "Check for wax coating",
+            "Flatten completely",
+            "Check local recycling guidelines"
+        ],
+        "alternative_products": [
+            "Butter in reusable containers",
+            "Local butter in paper packaging",
+            "Homemade butter"
+        ]
+    },
+    {
+        "barcode": "8901012000107",
+        "name": "Sprite Plastic Bottle",
+        "category": "Plastic",
+        "instructions": "Rinse and recycle with plastics",
+        "environmental_impact": "High",
+        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
+        "recycling_tips": [
+            "Remove cap and label",
+            "Rinse thoroughly",
+            "Flatten to save space",
+            "Check local recycling guidelines"
+        ],
+        "alternative_products": [
+            "Glass bottles",
+            "Aluminum cans",
+            "Reusable water bottle"
+        ]
+    }
+]
