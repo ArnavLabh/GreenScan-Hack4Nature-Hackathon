@@ -3,28 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenScan - Smart Recycling Guide</title>
+    <title>GreenScan - {% block title %}{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <!-- Add Toastify for notifications -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <style>
+        .navbar {
+            height: 70px;
+            overflow: hidden;
+        }
+        .navbar-brand {
+            position: relative;
+            height: 70px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-brand img {
+            height: 60px;
+            width: auto;
+            transition: transform 0.3s ease;
+        }
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: #fff;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        .btn {
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .animate__animated {
+            animation-duration: 0.5s !important;
+        }
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success">
         <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('index') }}">
-                <div class="logo-container me-2">
-                    <i class="fas fa-qrcode fa-2x"></i>
-                    <i class="fas fa-leaf fa-sm logo-leaf"></i>
-                </div>
-                <span class="brand-text">GreenScan</span>
+            <a class="navbar-brand animate__animated animate__fadeIn" href="{{ url_for('index') }}">
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="GreenScan Logo" class="me-2">
+            
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
+                <ul class="navbar-nav ms-auto animate__animated animate__fadeIn">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('index') }}">Home</a>
                     </li>
@@ -40,13 +93,13 @@
                         </a>
                     </li>
                 </ul>
-                <form action="{{ url_for('search') }}" method="get" class="d-flex">
+                <form action="{{ url_for('search') }}" method="get" class="d-flex animate__animated animate__fadeIn">
                     <input type="text" name="q" class="form-control me-2" placeholder="Quick search..." style="width: 200px;">
                     <button type="submit" class="btn btn-outline-light">
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
-                <ul class="navbar-nav ms-3">
+                <ul class="navbar-nav ms-3 animate__animated animate__fadeIn">
                     <li class="nav-item">
                         <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">About</a>
                     </li>
@@ -64,14 +117,9 @@
         {% block content %}{% endblock %}
     </main>
 
-    <footer class="bg-light py-3 mt-auto">
+    <footer class="bg-light py-4 mt-auto">
         <div class="container text-center">
-            <p class="mb-0">Making Recycling Smarter, One Scan at a Time</p>
-            <div class="mt-2">
-                <button class="btn btn-sm btn-outline-success" onclick="window.print()">
-                    <i class="fas fa-print"></i> Print Recycling Guide
-                </button>
-            </div>
+            <p class="mb-0">&copy; 2024 GreenScan. All rights reserved.</p>
         </div>
     </footer>
 
@@ -186,5 +234,6 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

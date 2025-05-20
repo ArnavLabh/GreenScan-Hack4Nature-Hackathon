@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% block title %}Scan Product{% endblock %}
+
 {% block content %}
 <div class="container">
     <div class="row justify-content-center">
@@ -37,7 +39,9 @@
 
                     <!-- Loading Indicator -->
                     <div id="loadingIndicator" class="text-center mt-4 d-none">
-                        <div class="spinner"></div>
+                        <div class="spinner-border text-success" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
                         <p class="mt-2">Processing image...</p>
                     </div>
 
@@ -75,7 +79,9 @@
         </div>
     </div>
 </div>
+{% endblock %}
 
+{% block scripts %}
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script>
     let html5QrcodeScanner = null;
@@ -92,13 +98,15 @@
                     fps: 10,
                     qrbox: { width: 250, height: 250 },
                     aspectRatio: 1.0,
-                    formatsToSupport: [ Html5QrcodeSupportedFormats.EAN_13, 
-                                     Html5QrcodeSupportedFormats.UPC_A,
-                                     Html5QrcodeSupportedFormats.UPC_E,
-                                     Html5QrcodeSupportedFormats.EAN_8,
-                                     Html5QrcodeSupportedFormats.CODE_128,
-                                     Html5QrcodeSupportedFormats.CODE_39,
-                                     Html5QrcodeSupportedFormats.CODABAR ]
+                    formatsToSupport: [ 
+                        Html5QrcodeSupportedFormats.EAN_13,
+                        Html5QrcodeSupportedFormats.UPC_A,
+                        Html5QrcodeSupportedFormats.UPC_E,
+                        Html5QrcodeSupportedFormats.EAN_8,
+                        Html5QrcodeSupportedFormats.CODE_128,
+                        Html5QrcodeSupportedFormats.CODE_39,
+                        Html5QrcodeSupportedFormats.CODABAR
+                    ]
                 };
 
                 await html5QrcodeScanner.start(
@@ -165,7 +173,7 @@
         }, 5000);
     }
 
-    function handleImageUpload(event) {
+    async function handleImageUpload(event) {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -173,46 +181,48 @@
         document.getElementById('loadingIndicator').classList.remove('d-none');
         document.getElementById('errorMessage').classList.add('d-none');
 
-        // Create a new instance of Html5Qrcode
-        const html5QrCode = new Html5Qrcode("reader");
-        
-        // Read the file
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const imageData = e.target.result;
+        try {
+            // Create a new instance of Html5Qrcode
+            const html5QrCode = new Html5Qrcode("reader");
+            
+            // Read the file
+            const imageData = await readFileAsDataURL(file);
             
             // Scan the image
-            html5QrCode.scanFile(imageData, true)
-                .then(decodedText => {
-                    // Stop the scanner
-                    html5QrCode.stop();
-                    
-                    // Submit the form with the scanned barcode
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = "{{ url_for('result') }}";
-                    
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'barcode';
-                    input.value = decodedText;
-                    
-                    form.appendChild(input);
-                    document.body.appendChild(form);
-                    form.submit();
-                })
-                .catch(err => {
-                    // Hide loading indicator
-                    document.getElementById('loadingIndicator').classList.add('d-none');
-                    
-                    // Show error message
-                    showError('Could not detect barcode in the image. Please try again.');
-                    
-                    // Stop the scanner
-                    html5QrCode.stop();
-                });
-        };
-        reader.readAsDataURL(file);
+            const result = await html5QrCode.scanFile(imageData, true);
+            
+            // Stop the scanner
+            await html5QrCode.stop();
+            
+            // Submit the form with the scanned barcode
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = "{{ url_for('result') }}";
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'barcode';
+            input.value = result;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        } catch (err) {
+            // Hide loading indicator
+            document.getElementById('loadingIndicator').classList.add('d-none');
+            
+            // Show error message
+            showError('Could not detect barcode in the image. Please try again.');
+        }
+    }
+
+    function readFileAsDataURL(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = e => reject(e);
+            reader.readAsDataURL(file);
+        });
     }
 
     // Initialize the scanner when the page loads
