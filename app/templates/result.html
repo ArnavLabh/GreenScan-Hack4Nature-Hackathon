@@ -7,7 +7,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             {% if product %}
-            <div class="card">
+            <div class="card animate__animated animate__fadeIn">
                 <div class="card-header bg-success text-white">
                     <h4 class="mb-0">Product Information</h4>
                 </div>
@@ -61,7 +61,7 @@
             </div>
 
             {% else %}
-            <div class="card">
+            <div class="card animate__animated animate__fadeIn">
                 <div class="card-body text-center">
                     <i class="fas fa-exclamation-circle text-warning fa-3x mb-3"></i>
                     <h3>Product Not Found</h3>
@@ -80,4 +80,52 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Update stats when product is found
+    {% if product %}
+    document.addEventListener('DOMContentLoaded', function() {
+        const stats = JSON.parse(localStorage.getItem('greenscan_stats')) || {
+            totalScans: 0,
+            recyclable: 0,
+            nonRecyclable: 0,
+            recentActivity: []
+        };
+
+        // Update stats
+        stats.totalScans++;
+        if ({{ 'true' if product.recyclable else 'false' }}) {
+            stats.recyclable++;
+        } else {
+            stats.nonRecyclable++;
+        }
+
+        // Add to recent activity
+        stats.recentActivity.unshift({
+            product: "{{ product.name }}",
+            recyclable: {{ 'true' if product.recyclable else 'false' }},
+            time: new Date().toLocaleString()
+        });
+
+        // Keep only last 10 activities
+        stats.recentActivity = stats.recentActivity.slice(0, 10);
+
+        // Save updated stats
+        localStorage.setItem('greenscan_stats', JSON.stringify(stats));
+
+        // Show notification if enabled
+        if (localStorage.getItem('greenscan_notifications') === 'true') {
+            Toastify({
+                text: "Product scanned successfully!",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#28a745"
+            }).showToast();
+        }
+    });
+    {% endif %}
+</script>
 {% endblock %}

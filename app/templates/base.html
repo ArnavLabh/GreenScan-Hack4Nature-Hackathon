@@ -26,6 +26,8 @@
             height: 60px;
             width: auto;
             transition: transform 0.3s ease;
+            margin-top: -5px;
+            margin-left: 50px;
         }
         .navbar-brand:hover img {
             transform: scale(1.05);
@@ -108,6 +110,26 @@
                             <i class="fas fa-cog"></i>
                         </a>
                     </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>{{ current_user.name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('settings') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+                    </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
@@ -119,7 +141,7 @@
 
     <footer class="bg-light py-4 mt-auto">
         <div class="container text-center">
-            <p class="mb-0">&copy; 2024 GreenScan. All rights reserved.</p>
+            <p class="mb-0">&copy; 2025 GreenScan. All rights reserved.</p>
         </div>
     </footer>
 
@@ -168,8 +190,8 @@
                         <div class="col-md-6">
                             <div class="card mb-3">
                                 <div class="card-body">
-                                    <h6>Environmental Impact</h6>
-                                    <div id="impactChart"></div>
+                                    <h6>Recycling Impact</h6>
+                                    <canvas id="impactChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -198,27 +220,11 @@
                         <div class="mb-3">
                             <label class="form-label">Notifications</label>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="enableNotifications">
+                                <input class="form-check-input" type="checkbox" id="enableNotifications" checked>
                                 <label class="form-check-label" for="enableNotifications">
                                     Enable notifications
                                 </label>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Theme</label>
-                            <select class="form-select" id="themeSelect">
-                                <option value="light">Light</option>
-                                <option value="dark">Dark</option>
-                                <option value="system">System</option>
-                            </select>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Language</label>
-                            <select class="form-select" id="languageSelect">
-                                <option value="en">English</option>
-                                <option value="hi">Hindi</option>
-                                <option value="mr">Marathi</option>
-                            </select>
                         </div>
                     </form>
                 </div>
@@ -233,7 +239,82 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script>
+        // Initialize stats
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStats();
+        });
+
+        function loadStats() {
+            // Load stats from localStorage
+            const stats = JSON.parse(localStorage.getItem('greenscan_stats')) || {
+                totalScans: 0,
+                recyclable: 0,
+                nonRecyclable: 0,
+                recentActivity: []
+            };
+
+            // Update total scans
+            document.getElementById('totalScans').textContent = stats.totalScans;
+
+            // Update impact chart
+            const ctx = document.getElementById('impactChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Recyclable', 'Non-Recyclable'],
+                    datasets: [{
+                        data: [stats.recyclable, stats.nonRecyclable],
+                        backgroundColor: ['#28a745', '#dc3545']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Update recent activity
+            const activityList = document.getElementById('recentActivity');
+            activityList.innerHTML = '';
+            stats.recentActivity.slice(0, 5).forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'list-group-item';
+                item.innerHTML = `
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-${activity.recyclable ? 'recycle text-success' : 'trash text-danger'} me-2"></i>
+                            ${activity.product}
+                        </div>
+                        <small class="text-muted">${activity.time}</small>
+                    </div>
+                `;
+                activityList.appendChild(item);
+            });
+        }
+
+        function saveSettings() {
+            const notifications = document.getElementById('enableNotifications').checked;
+            localStorage.setItem('greenscan_notifications', notifications);
+            
+            // Show success message
+            Toastify({
+                text: "Settings saved successfully!",
+                duration: 3000,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#28a745"
+            }).showToast();
+        }
+
+        // Load saved settings
+        document.addEventListener('DOMContentLoaded', function() {
+            const notifications = localStorage.getItem('greenscan_notifications');
+            if (notifications !== null) {
+                document.getElementById('enableNotifications').checked = notifications === 'true';
+            }
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

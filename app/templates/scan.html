@@ -18,14 +18,15 @@
                     <div class="text-center mb-4">
                         <p class="text-muted">Or upload a photo of the barcode</p>
                         <div class="d-flex justify-content-center gap-3">
-                            <button class="btn btn-success" onclick="document.getElementById('barcodeImage').click()">
+                            <button class="btn btn-success" onclick="startCamera()">
                                 <i class="fas fa-camera"></i> Take Photo
                             </button>
                             <button class="btn btn-outline-success" onclick="document.getElementById('barcodeImage').click()">
                                 <i class="fas fa-upload"></i> Upload Image
                             </button>
                         </div>
-                        <input type="file" id="barcodeImage" accept="image/*" capture="environment" class="d-none" onchange="handleImageUpload(event)">
+                        <input type="file" id="barcodeImage" accept="image/*" class="d-none" onchange="handleImageUpload(event)">
+                        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="d-none" onchange="handleCameraCapture(event)">
                     </div>
 
                     <!-- Manual Entry Section -->
@@ -83,6 +84,7 @@
 
 {% block scripts %}
 <script src="https://unpkg.com/html5-qrcode"></script>
+<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
 <script>
     let html5QrcodeScanner = null;
     let isScanning = false;
@@ -173,7 +175,11 @@
         }, 5000);
     }
 
-    async function handleImageUpload(event) {
+    function startCamera() {
+        document.getElementById('cameraInput').click();
+    }
+
+    async function handleCameraCapture(event) {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -188,25 +194,16 @@
             // Read the file
             const imageData = await readFileAsDataURL(file);
             
-            // Scan the image
-            const result = await html5QrCode.scanFile(imageData, true);
+            // Try Quagga first for better barcode detection
+            const result = await scanWithQuagga(imageData);
+            if (result) {
+                submitBarcode(result);
+                return;
+            }
             
-            // Stop the scanner
-            await html5QrCode.stop();
-            
-            // Submit the form with the scanned barcode
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = "{{ url_for('result') }}";
-            
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'barcode';
-            input.value = result;
-            
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
+            // If Quagga fails, try Html5Qrcode
+            const html5Result = await html5QrCode.scanFile(imageData, true);
+            submitBarcode(html5Result);
         } catch (err) {
             // Hide loading indicator
             document.getElementById('loadingIndicator').classList.add('d-none');
@@ -214,6 +211,70 @@
             // Show error message
             showError('Could not detect barcode in the image. Please try again.');
         }
+    }
+
+    async function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        // Show loading indicator
+        document.getElementById('loadingIndicator').classList.remove('d-none');
+        document.getElementById('errorMessage').classList.add('d-none');
+
+        try {
+            const imageData = await readFileAsDataURL(file);
+            
+            // Try Quagga first for better barcode detection
+            const result = await scanWithQuagga(imageData);
+            if (result) {
+                submitBarcode(result);
+                return;
+            }
+            
+            // If Quagga fails, try Html5Qrcode
+            const html5QrCode = new Html5Qrcode("reader");
+            const html5Result = await html5QrCode.scanFile(imageData, true);
+            submitBarcode(html5Result);
+        } catch (err) {
+            // Hide loading indicator
+            document.getElementById('loadingIndicator').classList.add('d-none');
+            
+            // Show error message
+            showError('Could not detect barcode in the image. Please try again.');
+        }
+    }
+
+    function scanWithQuagga(imageData) {
+        return new Promise((resolve, reject) => {
+            Quagga.decodeSingle({
+                decoder: {
+                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "code_128_reader", "code_39_reader", "codabar_reader"]
+                },
+                locate: true,
+                src: imageData
+            }, function(result) {
+                if (result && result.codeResult) {
+                    resolve(result.codeResult.code);
+                } else {
+                    resolve(null);
+                }
+            });
+        });
+    }
+
+    function submitBarcode(barcode) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = "{{ url_for('result') }}";
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'barcode';
+        input.value = barcode;
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
     }
 
     function readFileAsDataURL(file) {
