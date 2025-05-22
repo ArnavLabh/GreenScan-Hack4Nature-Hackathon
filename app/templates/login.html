@@ -1,19 +1,26 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Login - GreenScan{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Login to GreenScan</h4>
-                </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ url_for('login') }}">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Login</h2>
+                    
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('main.login') }}">
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email address</label>
+                            <label for="email" class="form-label">Email</label>
                             <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                         <div class="mb-3">
@@ -28,8 +35,9 @@
                             <button type="submit" class="btn btn-success">Login</button>
                         </div>
                     </form>
+
                     <div class="text-center mt-3">
-                        <p class="mb-0">Don't have an account? <a href="{{ url_for('signup') }}" class="text-success">Sign up</a></p>
+                        <p class="mb-0">Don't have an account? <a href="{{ url_for('main.signup') }}">Sign up</a></p>
                     </div>
                 </div>
             </div>

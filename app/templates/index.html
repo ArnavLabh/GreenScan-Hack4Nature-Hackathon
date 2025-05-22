@@ -6,7 +6,7 @@
         <h1 class="display-4 mb-4">Make Recycling Smarter with GreenScan</h1>
         <p class="lead mb-4">Scan product barcodes to get instant recycling instructions, environmental impact assessment, and sustainable alternatives.</p>
         <div class="d-grid gap-2 d-md-flex">
-            <a href="{{ url_for('scan') }}" class="btn btn-success btn-lg">
+            <a href="{{ url_for('main.scan') }}" class="btn btn-success btn-lg">
                 <i class="fas fa-barcode me-2"></i>Start Scanning
             </a>
             <button class="btn btn-outline-success btn-lg" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
@@ -15,7 +15,7 @@
         </div>
     </div>
     <div class="col-md-6">
-        <img src="{{ url_for('static', filename='images/recycling-illustration.svg') }}" alt="Recycling Illustration" class="img-fluid">
+        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800" alt="Recycling Illustration" class="img-fluid rounded shadow">
     </div>
 </div>
 

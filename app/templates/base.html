@@ -3,131 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenScan - {% block title %}{% endblock %}</title>
+    <title>{% block title %}GreenScan{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <!-- Add Toastify for notifications -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        .navbar {
-            height: 70px;
-            overflow: hidden;
+        body {
+            padding-top: 60px;
+            background-color: #f8f9fa;
         }
         .navbar-brand {
-            position: relative;
-            height: 70px;
-            display: flex;
-            align-items: center;
-        }
-        .navbar-brand img {
-            height: 60px;
-            width: auto;
-            transition: transform 0.3s ease;
-            margin-top: -5px;
-            margin-left: 50px;
-        }
-        .navbar-brand:hover img {
-            transform: scale(1.05);
-        }
-        .nav-link {
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: 0;
-            left: 50%;
-            background-color: #fff;
-            transition: all 0.3s ease;
-            transform: translateX(-50%);
-        }
-        .nav-link:hover::after {
-            width: 100%;
-        }
-        .btn {
-            transition: all 0.3s ease;
-        }
-        .btn:hover {
-            transform: translateY(-2px);
+            font-weight: bold;
         }
         .card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
         }
-        .animate__animated {
-            animation-duration: 0.5s !important;
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .text-success {
+            color: #28a745 !important;
+        }
+        .bg-success {
+            background-color: #28a745 !important;
+        }
+        .modal-content {
+            border-radius: 15px;
+        }
+        .modal-header {
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+        .modal-body {
+            padding: 1.5rem;
+        }
+        .modal-footer {
+            border-top: none;
+            padding: 1.5rem;
+        }
+        .stats-card {
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .stats-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .recent-activity {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .activity-item {
+            padding: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .activity-item:last-child {
+            border-bottom: none;
         }
     </style>
+    {% block styles %}{% endblock %}
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
         <div class="container">
-            <a class="navbar-brand animate__animated animate__fadeIn" href="{{ url_for('index') }}">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="GreenScan Logo" class="me-2">
-            
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="fas fa-leaf me-2"></i>GreenScan
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto animate__animated animate__fadeIn">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('scan') }}">Scan</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('search') }}">Search</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#statsModal">
-                            <i class="fas fa-chart-bar"></i> Stats
+                        <a class="nav-link" href="{{ url_for('main.index') }}">
+                            <i class="fas fa-home me-1"></i>Home
                         </a>
                     </li>
-                </ul>
-                <form action="{{ url_for('search') }}" method="get" class="d-flex animate__animated animate__fadeIn">
-                    <input type="text" name="q" class="form-control me-2" placeholder="Quick search..." style="width: 200px;">
-                    <button type="submit" class="btn btn-outline-light">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </form>
-                <ul class="navbar-nav ms-3 animate__animated animate__fadeIn">
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">About</a>
+                        <a class="nav-link" href="{{ url_for('main.scan') }}">
+                            <i class="fas fa-camera me-1"></i>Scan
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#settingsModal">
-                            <i class="fas fa-cog"></i>
+                        <a class="nav-link" href="{{ url_for('main.search') }}">
+                            <i class="fas fa-search me-1"></i>Search
                         </a>
                     </li>
                     {% if current_user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-1"></i>{{ current_user.name }}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#statsModal">
+                            <i class="fas fa-chart-bar me-1"></i>Stats
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="{{ url_for('profile') }}"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="{{ url_for('settings') }}"><i class="fas fa-cog me-2"></i>Settings</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
-                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.settings') }}">
+                            <i class="fas fa-cog me-1"></i>Settings
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.logout') }}">
+                            <i class="fas fa-sign-out-alt me-1"></i>Logout
+                        </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                        <a class="nav-link" href="{{ url_for('main.login') }}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('signup') }}">Sign Up</a>
+                        <a class="nav-link" href="{{ url_for('main.signup') }}">
+                            <i class="fas fa-user-plus me-1"></i>Sign Up
+                        </a>
                     </li>
                     {% endif %}
                 </ul>
@@ -135,185 +134,111 @@
         </div>
     </nav>
 
-    <main class="container py-4">
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
         {% block content %}{% endblock %}
-    </main>
-
-    <footer class="bg-light py-4 mt-auto">
-        <div class="container text-center">
-            <p class="mb-0">&copy; 2025 GreenScan. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <!-- About Modal -->
-    <div class="modal fade" id="aboutModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">About GreenScan</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <p>GreenScan is your smart recycling companion that helps you make eco-friendly choices. Simply scan product barcodes to get detailed recycling instructions and sustainable alternatives.</p>
-                    <h6 class="mt-3">Features:</h6>
-                    <ul>
-                        <li>Instant recycling instructions</li>
-                        <li>Environmental impact assessment</li>
-                        <li>Sustainable alternatives</li>
-                        <li>Detailed recycling tips</li>
-                        <li>Recycling statistics</li>
-                        <li>Local recycling center finder</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
     </div>
 
+    {% if current_user.is_authenticated %}
     <!-- Stats Modal -->
     <div class="modal fade" id="statsModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Recycling Statistics</h5>
+                    <h5 class="modal-title">
+                        <i class="fas fa-chart-bar me-2"></i>Recycling Statistics
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h6>Items Scanned</h6>
-                                    <h3 id="totalScans">0</h3>
+                            <div class="stats-card text-center">
+                                <div class="stats-icon text-success">
+                                    <i class="fas fa-recycle"></i>
                                 </div>
+                                <h3 id="totalScans">0</h3>
+                                <p class="text-muted mb-0">Items Scanned</p>
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card mb-3">
-                                <div class="card-body">
-                                    <h6>Recycling Impact</h6>
-                                    <canvas id="impactChart"></canvas>
+                            <div class="stats-card text-center">
+                                <div class="stats-icon text-success">
+                                    <i class="fas fa-leaf"></i>
                                 </div>
+                                <h3 id="recyclingImpact">0</h3>
+                                <p class="text-muted mb-0">Recycling Impact</p>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-3">
-                        <h6>Recent Activity</h6>
-                        <div id="recentActivity" class="list-group">
-                            <!-- Activity items will be added dynamically -->
+                    <div class="mt-4">
+                        <h6 class="mb-3">
+                            <i class="fas fa-history me-2"></i>Recent Activity
+                        </h6>
+                        <div id="recentActivity" class="recent-activity">
+                            <!-- Activity items will be loaded here -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Settings Modal -->
-    <div class="modal fade" id="settingsModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Settings</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="settingsForm">
-                        <div class="mb-3">
-                            <label class="form-label">Notifications</label>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="enableNotifications" checked>
-                                <label class="form-check-label" for="enableNotifications">
-                                    Enable notifications
-                                </label>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="saveSettings()">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endif %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Initialize stats
-        document.addEventListener('DOMContentLoaded', function() {
-            loadStats();
-        });
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if current_user.is_authenticated %}
+        // Load stats when modal is shown
+        const statsModal = document.getElementById('statsModal');
+        if (statsModal) {
+            statsModal.addEventListener('show.bs.modal', function() {
+                loadStats();
+            });
+        }
 
+        // Function to load stats
         function loadStats() {
-            // Load stats from localStorage
-            const stats = JSON.parse(localStorage.getItem('greenscan_stats')) || {
-                totalScans: 0,
-                recyclable: 0,
-                nonRecyclable: 0,
-                recentActivity: []
-            };
-
-            // Update total scans
-            document.getElementById('totalScans').textContent = stats.totalScans;
-
-            // Update impact chart
-            const ctx = document.getElementById('impactChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Recyclable', 'Non-Recyclable'],
-                    datasets: [{
-                        data: [stats.recyclable, stats.nonRecyclable],
-                        backgroundColor: ['#28a745', '#dc3545']
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
-
-            // Update recent activity
-            const activityList = document.getElementById('recentActivity');
-            activityList.innerHTML = '';
-            stats.recentActivity.slice(0, 5).forEach(activity => {
-                const item = document.createElement('div');
-                item.className = 'list-group-item';
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-${activity.recyclable ? 'recycle text-success' : 'trash text-danger'} me-2"></i>
-                            ${activity.product}
-                        </div>
-                        <small class="text-muted">${activity.time}</small>
-                    </div>
-                `;
-                activityList.appendChild(item);
-            });
+            fetch('/api/stats')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalScans').textContent = data.total_scans;
+                    document.getElementById('recyclingImpact').textContent = data.recycling_impact;
+                    
+                    const recentActivity = document.getElementById('recentActivity');
+                    recentActivity.innerHTML = '';
+                    
+                    data.recent_activity.slice(0, 5).reverse().forEach(activity => {
+                        const item = document.createElement('div');
+                        item.className = 'activity-item';
+                        item.innerHTML = `
+                            <div class="d-flex align-items-center">
+                                <i class="fas ${activity.recyclable ? 'fa-recycle text-success' : 'fa-times-circle text-danger'} me-2"></i>
+                                <div>
+                                    <div class="fw-bold">${activity.product_name}</div>
+                                    <small class="text-muted">${activity.time}</small>
+                                </div>
+                            </div>
+                        `;
+                        recentActivity.appendChild(item);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading stats:', error);
+                });
         }
-
-        function saveSettings() {
-            const notifications = document.getElementById('enableNotifications').checked;
-            localStorage.setItem('greenscan_notifications', notifications);
-            
-            // Show success message
-            Toastify({
-                text: "Settings saved successfully!",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "#28a745"
-            }).showToast();
-        }
-
-        // Load saved settings
-        document.addEventListener('DOMContentLoaded', function() {
-            const notifications = localStorage.getItem('greenscan_notifications');
-            if (notifications !== null) {
-                document.getElementById('enableNotifications').checked = notifications === 'true';
-            }
-        });
+        {% endif %}
+    });
     </script>
     {% block scripts %}{% endblock %}
 </body>

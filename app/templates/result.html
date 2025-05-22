@@ -1,131 +1,116 @@
 {% extends "base.html" %}
 
-{% block title %}Scan Result{% endblock %}
+{% block title %}Scan Result - GreenScan{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-5">
+    {% if product %}
     <div class="row justify-content-center">
         <div class="col-md-8">
-            {% if product %}
-            <div class="card animate__animated animate__fadeIn">
-                <div class="card-header bg-success text-white">
-                    <h4 class="mb-0">Product Information</h4>
-                </div>
-                <div class="card-body">
-                    <div class="row">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body p-4">
+                    <!-- Product Header -->
+                    <div class="row mb-4">
                         <div class="col-md-4">
-                            <img src="{{ product.image }}" alt="{{ product.name }}" class="img-fluid rounded mb-3">
+                            <img src="{{ product.image }}" alt="{{ product.name }}" class="img-fluid rounded">
                         </div>
                         <div class="col-md-8">
-                            <h3 class="card-title">{{ product.name }}</h3>
-                            <p class="text-muted">Category: {{ product.category }}</p>
-                            <div class="mb-3">
-                                <span class="badge {% if product.recyclable %}bg-success{% else %}bg-danger{% endif %}">
-                                    {% if product.recyclable %}Recyclable{% else %}Not Recyclable{% endif %}
+                            <h2 class="mb-3">{{ product.name }}</h2>
+                            <div class="d-flex align-items-center mb-3">
+                                <span class="badge bg-{{ 'success' if product.recyclable else 'danger' }} me-2">
+                                    {{ 'Recyclable' if product.recyclable else 'Not Recyclable' }}
                                 </span>
+                                <span class="badge bg-info">{{ product.category }}</span>
+                            </div>
+                            <div class="progress mb-3" style="height: 10px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ product.sustainability_score }}%;" aria-valuenow="{{ product.sustainability_score }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <p class="text-muted mb-0">Sustainability Score: {{ product.sustainability_score }}/100</p>
+                        </div>
+                    </div>
+
+                    <!-- Environmental Impact -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h4 class="mb-3">Environmental Impact</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p class="mb-2">{{ product.environmental_impact }}</p>
+                                    <p class="mb-0"><strong>Carbon Footprint:</strong> {{ product.carbon_footprint }}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4">
-                        <h5>Recycling Instructions</h5>
-                        <p>{{ product.recycling_instructions }}</p>
+                    <!-- Recycling Instructions -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h4 class="mb-3">Recycling Instructions</h4>
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <p class="mb-3">{{ product.recycling_instructions }}</p>
+                                    <h6 class="mb-2">Recycling Code: {{ product.recycling_code }}</h6>
+                                    <h6 class="mb-2">Tips:</h6>
+                                    <ul class="mb-0">
+                                        {% for tip in product.recycling_tips %}
+                                        <li>{{ tip }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mt-4">
-                        <h5>Environmental Impact</h5>
-                        <p>{{ product.environmental_impact }}</p>
-                    </div>
-
-                    <div class="mt-4">
-                        <h5>Eco-Friendly Alternatives</h5>
-                        <ul class="list-group">
-                            {% for alternative in product.alternatives %}
-                            <li class="list-group-item">
-                                <i class="fas fa-leaf text-success me-2"></i>
-                                {{ alternative }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div class="text-center mt-4">
-                <a href="{{ url_for('scan') }}" class="btn btn-success">
-                    <i class="fas fa-qrcode me-2"></i>Scan Another Product
-                </a>
-                <a href="{{ url_for('index') }}" class="btn btn-outline-success ms-2">
-                    <i class="fas fa-home me-2"></i>Back to Home
-                </a>
-            </div>
-
-            {% else %}
-            <div class="card animate__animated animate__fadeIn">
-                <div class="card-body text-center">
-                    <i class="fas fa-exclamation-circle text-warning fa-3x mb-3"></i>
-                    <h3>Product Not Found</h3>
-                    <p class="text-muted">We couldn't find information for this barcode.</p>
-                    <div class="mt-4">
-                        <a href="{{ url_for('scan') }}" class="btn btn-success">
-                            <i class="fas fa-qrcode me-2"></i>Try Scanning Again
-                        </a>
-                        <a href="{{ url_for('index') }}" class="btn btn-outline-success ms-2">
-                            <i class="fas fa-home me-2"></i>Back to Home
-                        </a>
+                    <!-- Sustainable Alternatives -->
+                    <div class="row">
+                        <div class="col-12">
+                            <h4 class="mb-3">Sustainable Alternatives</h4>
+                            <div class="row">
+                                {% for alternative in product.alternatives %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">{{ alternative }}</h6>
+                                            <a href="{{ url_for('main.search') }}?q={{ alternative }}" class="btn btn-outline-success btn-sm">Find Options</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            {% endif %}
         </div>
     </div>
+    {% else %}
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card shadow-lg border-0 rounded-lg">
+                <div class="card-body p-5">
+                    <i class="fas fa-exclamation-circle text-warning fa-3x mb-3"></i>
+                    <h3 class="mb-3">Product Not Found</h3>
+                    <p class="text-muted mb-4">We couldn't find information for this product in our database.</p>
+                    <a href="{{ url_for('main.scan') }}" class="btn btn-primary me-2">Scan Again</a>
+                    <a href="{{ url_for('main.search') }}" class="btn btn-outline-primary">Search Products</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // Update stats when product is found
-    {% if product %}
+    // Add animation to cards
     document.addEventListener('DOMContentLoaded', function() {
-        const stats = JSON.parse(localStorage.getItem('greenscan_stats')) || {
-            totalScans: 0,
-            recyclable: 0,
-            nonRecyclable: 0,
-            recentActivity: []
-        };
-
-        // Update stats
-        stats.totalScans++;
-        if ({{ 'true' if product.recyclable else 'false' }}) {
-            stats.recyclable++;
-        } else {
-            stats.nonRecyclable++;
-        }
-
-        // Add to recent activity
-        stats.recentActivity.unshift({
-            product: "{{ product.name }}",
-            recyclable: {{ 'true' if product.recyclable else 'false' }},
-            time: new Date().toLocaleString()
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.classList.add('animate__animated', 'animate__fadeIn');
+            card.style.animationDelay = `${index * 0.1}s`;
         });
-
-        // Keep only last 10 activities
-        stats.recentActivity = stats.recentActivity.slice(0, 10);
-
-        // Save updated stats
-        localStorage.setItem('greenscan_stats', JSON.stringify(stats));
-
-        // Show notification if enabled
-        if (localStorage.getItem('greenscan_notifications') === 'true') {
-            Toastify({
-                text: "Product scanned successfully!",
-                duration: 3000,
-                gravity: "top",
-                position: "right",
-                backgroundColor: "#28a745"
-            }).showToast();
-        }
     });
-    {% endif %}
 </script>
 {% endblock %}

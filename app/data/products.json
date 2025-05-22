@@ -2,83 +2,115 @@
     "products": [
         {
             "name": "Coca-Cola Classic",
-            "barcode": "049000006343",
+            "barcodes": ["049000006343", "049000006344", "049000006345"],
             "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?w=500",
             "category": "Beverages",
             "recyclable": true,
             "recycling_instructions": "Rinse and recycle the aluminum can. The can is 100% recyclable.",
             "environmental_impact": "Aluminum cans are highly recyclable and can be recycled indefinitely.",
-            "alternatives": ["Water", "Sparkling water", "Homemade lemonade"]
+            "alternatives": ["Water", "Sparkling water", "Homemade lemonade"],
+            "carbon_footprint": "0.17 kg CO2e",
+            "recycling_code": "ALU",
+            "recycling_tips": ["Rinse thoroughly", "Crush the can to save space", "Check local recycling guidelines"],
+            "sustainability_score": 85
         },
         {
             "name": "Nestlé Pure Life Water",
-            "barcode": "050000000000",
+            "barcodes": ["050000000000", "050000000001", "050000000002"],
             "image": "https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=500",
             "category": "Beverages",
             "recyclable": true,
             "recycling_instructions": "Remove cap and recycle the plastic bottle. The bottle is made of PET plastic (Type 1).",
             "environmental_impact": "Plastic bottles can be recycled into new bottles or other plastic products.",
-            "alternatives": ["Tap water", "Filtered water", "Reusable water bottle"]
+            "alternatives": ["Tap water", "Filtered water", "Reusable water bottle"],
+            "carbon_footprint": "0.25 kg CO2e",
+            "recycling_code": "PET-1",
+            "recycling_tips": ["Remove label if possible", "Flatten the bottle", "Check for local bottle deposit programs"],
+            "sustainability_score": 75
         },
         {
             "name": "Lay's Classic Potato Chips",
-            "barcode": "028400000000",
+            "barcodes": ["028400000000", "028400000001", "028400000002"],
             "image": "https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500",
             "category": "Snacks",
             "recyclable": false,
             "recycling_instructions": "The chip bag is not recyclable due to its multi-layer composition. Please dispose in regular trash.",
             "environmental_impact": "Chip bags are difficult to recycle due to their mixed material composition.",
-            "alternatives": ["Homemade potato chips", "Fresh vegetables", "Nuts and seeds"]
+            "alternatives": ["Homemade potato chips", "Fresh vegetables", "Nuts and seeds"],
+            "carbon_footprint": "0.35 kg CO2e",
+            "recycling_code": "N/A",
+            "recycling_tips": ["Consider buying in bulk to reduce packaging", "Look for brands with recyclable packaging"],
+            "sustainability_score": 45
         },
         {
             "name": "Tropicana Orange Juice",
-            "barcode": "049000006343",
+            "barcodes": ["049000006343", "049000006344", "049000006345"],
             "image": "https://images.unsplash.com/photo-1613478223719605475b6d91?w=500",
             "category": "Beverages",
             "recyclable": true,
             "recycling_instructions": "Rinse and recycle the carton. The carton is made of paperboard and can be recycled.",
             "environmental_impact": "Cartons are recyclable but require special processing facilities.",
-            "alternatives": ["Fresh squeezed orange juice", "Whole oranges", "Homemade juice"]
+            "alternatives": ["Fresh squeezed orange juice", "Whole oranges", "Homemade juice"],
+            "carbon_footprint": "0.28 kg CO2e",
+            "recycling_code": "PAP-81",
+            "recycling_tips": ["Rinse thoroughly", "Flatten the carton", "Check for local carton recycling programs"],
+            "sustainability_score": 80
         },
         {
             "name": "Dove Shampoo",
-            "barcode": "079400000000",
+            "barcodes": ["079400000000", "079400000001", "079400000002"],
             "image": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=500",
             "category": "Personal Care",
             "recyclable": true,
             "recycling_instructions": "Rinse and recycle the plastic bottle. The bottle is made of HDPE plastic (Type 2).",
             "environmental_impact": "Plastic bottles can be recycled into new bottles or other plastic products.",
-            "alternatives": ["Bar shampoo", "Refillable shampoo", "Natural shampoo alternatives"]
+            "alternatives": ["Bar shampoo", "Refillable shampoo", "Natural shampoo alternatives"],
+            "carbon_footprint": "0.15 kg CO2e",
+            "recycling_code": "HDPE-2",
+            "recycling_tips": ["Remove pump if present", "Rinse thoroughly", "Check for refill programs"],
+            "sustainability_score": 70
         },
         {
             "name": "Colgate Toothpaste",
-            "barcode": "035000000000",
+            "barcodes": ["035000000000", "035000000001", "035000000002"],
             "image": "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=500",
             "category": "Personal Care",
             "recyclable": false,
             "recycling_instructions": "The toothpaste tube is not recyclable due to its mixed material composition. Please dispose in regular trash.",
             "environmental_impact": "Toothpaste tubes are difficult to recycle due to their mixed material composition.",
-            "alternatives": ["Toothpaste tablets", "Natural toothpaste", "Baking soda"]
+            "alternatives": ["Toothpaste tablets", "Natural toothpaste", "Baking soda"],
+            "carbon_footprint": "0.12 kg CO2e",
+            "recycling_code": "N/A",
+            "recycling_tips": ["Look for brands with recyclable packaging", "Consider bulk options"],
+            "sustainability_score": 40
         },
         {
             "name": "Kellogg's Corn Flakes",
-            "barcode": "038000000000",
+            "barcodes": ["038000000000", "038000000001", "038000000002"],
             "image": "https://images.unsplash.com/photo-1525351484163-7529414344d8?w=500",
             "category": "Food",
             "recyclable": true,
             "recycling_instructions": "The box is recyclable. Remove the plastic liner and recycle the cardboard box.",
             "environmental_impact": "Cardboard boxes are highly recyclable and can be recycled multiple times.",
-            "alternatives": ["Homemade granola", "Oatmeal", "Fresh fruit"]
+            "alternatives": ["Homemade granola", "Oatmeal", "Fresh fruit"],
+            "carbon_footprint": "0.20 kg CO2e",
+            "recycling_code": "PAP-20",
+            "recycling_tips": ["Remove plastic liner", "Flatten the box", "Check for local paper recycling programs"],
+            "sustainability_score": 85
         },
         {
             "name": "Heinz Ketchup",
-            "barcode": "012000000000",
+            "barcodes": ["012000000000", "012000000001", "012000000002"],
             "image": "https://images.unsplash.com/photo-1625944525533-473f1a7c2c3a?w=500",
             "category": "Condiments",
             "recyclable": true,
             "recycling_instructions": "Rinse and recycle the glass bottle. The bottle is 100% recyclable.",
             "environmental_impact": "Glass is infinitely recyclable and can be recycled without loss of quality.",
-            "alternatives": ["Homemade ketchup", "Fresh tomatoes", "Other condiments"]
+            "alternatives": ["Homemade ketchup", "Fresh tomatoes", "Other condiments"],
+            "carbon_footprint": "0.18 kg CO2e",
+            "recycling_code": "GL-70",
+            "recycling_tips": ["Remove label if possible", "Rinse thoroughly", "Check for local glass recycling programs"],
+            "sustainability_score": 90
         }
     ]
 } 

@@ -1,80 +1,75 @@
 {% extends "base.html" %}
 
-{% block title %}Scan Product{% endblock %}
+{% block title %}Scan - GreenScan{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="mb-0">Scan Product Barcode</h4>
-                </div>
-                <div class="card-body">
-                    <!-- Scanner Container -->
-                    <div id="reader" class="mb-4" style="width: 100%; max-width: 600px; margin: 0 auto;"></div>
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h2 class="text-center mb-4">Scan Barcode</h2>
                     
-                    <!-- Manual Upload Section -->
                     <div class="text-center mb-4">
-                        <p class="text-muted">Or upload a photo of the barcode</p>
-                        <div class="d-flex justify-content-center gap-3">
-                            <button class="btn btn-success" onclick="startCamera()">
-                                <i class="fas fa-camera"></i> Take Photo
-                            </button>
-                            <button class="btn btn-outline-success" onclick="document.getElementById('barcodeImage').click()">
-                                <i class="fas fa-upload"></i> Upload Image
-                            </button>
+                        <div id="camera-container" class="mb-3" style="display: none;">
+                            <video id="camera" class="img-fluid rounded" style="max-height: 400px;"></video>
                         </div>
-                        <input type="file" id="barcodeImage" accept="image/*" class="d-none" onchange="handleImageUpload(event)">
-                        <input type="file" id="cameraInput" accept="image/*" capture="environment" class="d-none" onchange="handleCameraCapture(event)">
+                        <div id="loading" class="text-center" style="display: none;">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2">Processing image...</p>
+                        </div>
+                        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
                     </div>
 
-                    <!-- Manual Entry Section -->
+                    <div class="d-flex justify-content-center gap-2 mb-4">
+                        <button id="startCamera" class="btn btn-success">
+                            <i class="fas fa-camera me-2"></i>Start Camera
+                        </button>
+                        <button id="captureImage" class="btn btn-primary" style="display: none;">
+                            <i class="fas fa-camera-retro me-2"></i>Capture
+                        </button>
+                        <button id="uploadImage" class="btn btn-warning">
+                            <i class="fas fa-upload me-2"></i>Upload Image
+                        </button>
+                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                    </div>
+
                     <div class="text-center">
-                        <p class="text-muted">Or enter barcode manually</p>
-                        <form action="{{ url_for('result') }}" method="post" class="d-flex justify-content-center gap-2">
-                            <input type="text" name="barcode" class="form-control" style="max-width: 200px;" placeholder="Enter barcode">
-                            <button type="submit" class="btn btn-success">Search</button>
+                        <p class="text-muted">Or enter barcode manually:</p>
+                        <form id="barcodeForm" method="POST" action="{{ url_for('main.result') }}" class="d-flex justify-content-center gap-2">
+                            <input type="text" name="barcode" id="barcode" class="form-control" style="max-width: 200px;" 
+                                   pattern="[0-9]+" required placeholder="Enter barcode">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-search me-2"></i>Search
+                            </button>
                         </form>
                     </div>
 
-                    <!-- Loading Indicator -->
-                    <div id="loadingIndicator" class="text-center mt-4 d-none">
-                        <div class="spinner-border text-success" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                    <div class="mt-4">
+                        <h5 class="text-center mb-3">Scanning Tips</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-lightbulb text-warning fa-2x mb-2"></i>
+                                    <p class="mb-0">Ensure good lighting</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-hand-paper text-info fa-2x mb-2"></i>
+                                    <p class="mb-0">Hold steady</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="text-center">
+                                    <i class="fas fa-barcode text-success fa-2x mb-2"></i>
+                                    <p class="mb-0">Focus on barcode</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="mt-2">Processing image...</p>
                     </div>
-
-                    <!-- Error Message -->
-                    <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
-                </div>
-            </div>
-
-            <!-- Tips Card -->
-            <div class="card mt-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Scanning Tips</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <i class="fas fa-lightbulb text-warning me-2"></i>
-                            Ensure good lighting for better scanning
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-hand-pointer text-warning me-2"></i>
-                            Hold the barcode steady and parallel to the camera
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-camera text-warning me-2"></i>
-                            Keep the barcode within the scanning frame
-                        </li>
-                        <li class="list-group-item">
-                            <i class="fas fa-sync text-warning me-2"></i>
-                            Try different angles if scanning fails
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -84,23 +79,50 @@
 
 {% block scripts %}
 <script src="https://unpkg.com/html5-qrcode"></script>
-<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
 <script>
-    let html5QrcodeScanner = null;
-    let isScanning = false;
+let html5QrCode = null;
 
-    async function startScanner() {
+document.addEventListener('DOMContentLoaded', function() {
+    const startCameraBtn = document.getElementById('startCamera');
+    const captureImageBtn = document.getElementById('captureImage');
+    const uploadImageBtn = document.getElementById('uploadImage');
+    const imageInput = document.getElementById('imageInput');
+    const cameraContainer = document.getElementById('camera-container');
+    const camera = document.getElementById('camera');
+    const loading = document.getElementById('loading');
+    const errorMessage = document.getElementById('error-message');
+    const barcodeForm = document.getElementById('barcodeForm');
+
+    // Initialize QR code scanner once
+    function initializeScanner() {
+        if (html5QrCode === null) {
+            html5QrCode = new Html5Qrcode("camera-container");
+        }
+        return html5QrCode;
+    }
+
+    startCameraBtn.addEventListener('click', async function() {
         try {
-            const devices = await Html5Qrcode.getCameras();
-            if (devices && devices.length) {
-                const cameraId = devices[0].id;
-                html5QrcodeScanner = new Html5Qrcode("reader");
-                
-                const config = {
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                video: { 
+                    facingMode: 'environment',
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                } 
+            });
+            camera.srcObject = stream;
+            cameraContainer.style.display = 'block';
+            startCameraBtn.style.display = 'none';
+            captureImageBtn.style.display = 'inline-block';
+            
+            // Initialize QR code scanner
+            const scanner = initializeScanner();
+            scanner.start(
+                { deviceId: stream.getVideoTracks()[0].getSettings().deviceId },
+                {
                     fps: 10,
                     qrbox: { width: 250, height: 250 },
-                    aspectRatio: 1.0,
-                    formatsToSupport: [ 
+                    formatsToSupport: [
                         Html5QrcodeSupportedFormats.EAN_13,
                         Html5QrcodeSupportedFormats.UPC_A,
                         Html5QrcodeSupportedFormats.UPC_E,
@@ -109,191 +131,117 @@
                         Html5QrcodeSupportedFormats.CODE_39,
                         Html5QrcodeSupportedFormats.CODABAR
                     ]
-                };
-
-                await html5QrcodeScanner.start(
-                    cameraId,
-                    config,
-                    onScanSuccess,
-                    onScanFailure
-                );
-                isScanning = true;
-            } else {
-                showError("No camera found. Please check your camera permissions.");
-            }
+                },
+                onScanSuccess,
+                onScanFailure
+            );
         } catch (err) {
-            showError("Failed to start scanner: " + err.message);
+            showError('Error accessing camera: ' + err.message);
         }
-    }
+    });
 
-    function stopScanner() {
-        if (html5QrcodeScanner && isScanning) {
-            html5QrcodeScanner.stop().then(() => {
-                isScanning = false;
-            }).catch(err => {
-                console.error("Failed to stop scanner:", err);
-            });
+    function onScanSuccess(decodedText) {
+        if (html5QrCode) {
+            html5QrCode.stop();
         }
-    }
-
-    function onScanSuccess(decodedText, decodedResult) {
-        // Stop the scanner
-        stopScanner();
-        
-        // Show loading indicator
-        document.getElementById('loadingIndicator').classList.remove('d-none');
-        
-        // Submit the form with the scanned barcode
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = "{{ url_for('result') }}";
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'barcode';
-        input.value = decodedText;
-        
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
+        document.getElementById('barcode').value = decodedText;
+        barcodeForm.submit();
     }
 
     function onScanFailure(error) {
-        // Only show error if we're not already showing one
-        if (!document.getElementById('errorMessage').classList.contains('d-none')) {
-            return;
+        // Handle scan failure silently
+        console.warn(`QR code scan failed: ${error}`);
+    }
+
+    captureImageBtn.addEventListener('click', function() {
+        const canvas = document.createElement('canvas');
+        canvas.width = camera.videoWidth;
+        canvas.height = camera.videoHeight;
+        canvas.getContext('2d').drawImage(camera, 0, 0);
+        
+        canvas.toBlob(function(blob) {
+            processImage(blob);
+        }, 'image/jpeg', 0.8); // Reduced quality for faster processing
+    });
+
+    uploadImageBtn.addEventListener('click', function() {
+        imageInput.click();
+    });
+
+    imageInput.addEventListener('change', function(e) {
+        if (e.target.files && e.target.files[0]) {
+            processImage(e.target.files[0]);
         }
-        showError("Scanning failed. Please try again.");
+    });
+
+    function processImage(file) {
+        loading.style.display = 'block';
+        errorMessage.style.display = 'none';
+        
+        // Stop any ongoing scanning
+        if (html5QrCode) {
+            html5QrCode.stop();
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.onload = function() {
+                // Resize image if too large
+                const maxSize = 1024; // Maximum dimension
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > maxSize || height > maxSize) {
+                    if (width > height) {
+                        height = Math.round((height * maxSize) / width);
+                        width = maxSize;
+                    } else {
+                        width = Math.round((width * maxSize) / height);
+                        height = maxSize;
+                    }
+                }
+
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Try to decode barcode
+                const scanner = initializeScanner();
+                scanner.scanFile(canvas.toDataURL('image/jpeg', 0.8), true)
+                    .then(decodedText => {
+                        document.getElementById('barcode').value = decodedText;
+                        barcodeForm.submit();
+                    })
+                    .catch(err => {
+                        showError('No barcode found in image. Please try again.');
+                    })
+                    .finally(() => {
+                        loading.style.display = 'none';
+                    });
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
     }
 
     function showError(message) {
-        const errorMessage = document.getElementById('errorMessage');
         errorMessage.textContent = message;
-        errorMessage.classList.remove('d-none');
-        setTimeout(() => {
-            errorMessage.classList.add('d-none');
-        }, 5000);
+        errorMessage.style.display = 'block';
+        loading.style.display = 'none';
     }
 
-    function startCamera() {
-        document.getElementById('cameraInput').click();
-    }
-
-    async function handleCameraCapture(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        // Show loading indicator
-        document.getElementById('loadingIndicator').classList.remove('d-none');
-        document.getElementById('errorMessage').classList.add('d-none');
-
-        try {
-            // Create a new instance of Html5Qrcode
-            const html5QrCode = new Html5Qrcode("reader");
-            
-            // Read the file
-            const imageData = await readFileAsDataURL(file);
-            
-            // Try Quagga first for better barcode detection
-            const result = await scanWithQuagga(imageData);
-            if (result) {
-                submitBarcode(result);
-                return;
-            }
-            
-            // If Quagga fails, try Html5Qrcode
-            const html5Result = await html5QrCode.scanFile(imageData, true);
-            submitBarcode(html5Result);
-        } catch (err) {
-            // Hide loading indicator
-            document.getElementById('loadingIndicator').classList.add('d-none');
-            
-            // Show error message
-            showError('Could not detect barcode in the image. Please try again.');
-        }
-    }
-
-    async function handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        // Show loading indicator
-        document.getElementById('loadingIndicator').classList.remove('d-none');
-        document.getElementById('errorMessage').classList.add('d-none');
-
-        try {
-            const imageData = await readFileAsDataURL(file);
-            
-            // Try Quagga first for better barcode detection
-            const result = await scanWithQuagga(imageData);
-            if (result) {
-                submitBarcode(result);
-                return;
-            }
-            
-            // If Quagga fails, try Html5Qrcode
-            const html5QrCode = new Html5Qrcode("reader");
-            const html5Result = await html5QrCode.scanFile(imageData, true);
-            submitBarcode(html5Result);
-        } catch (err) {
-            // Hide loading indicator
-            document.getElementById('loadingIndicator').classList.add('d-none');
-            
-            // Show error message
-            showError('Could not detect barcode in the image. Please try again.');
-        }
-    }
-
-    function scanWithQuagga(imageData) {
-        return new Promise((resolve, reject) => {
-            Quagga.decodeSingle({
-                decoder: {
-                    readers: ["ean_reader", "ean_8_reader", "upc_reader", "code_128_reader", "code_39_reader", "codabar_reader"]
-                },
-                locate: true,
-                src: imageData
-            }, function(result) {
-                if (result && result.codeResult) {
-                    resolve(result.codeResult.code);
-                } else {
-                    resolve(null);
-                }
-            });
-        });
-    }
-
-    function submitBarcode(barcode) {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = "{{ url_for('result') }}";
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'barcode';
-        input.value = barcode;
-        
-        form.appendChild(input);
-        document.body.appendChild(form);
-        form.submit();
-    }
-
-    function readFileAsDataURL(file) {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = e => resolve(e.target.result);
-            reader.onerror = e => reject(e);
-            reader.readAsDataURL(file);
-        });
-    }
-
-    // Initialize the scanner when the page loads
-    document.addEventListener('DOMContentLoaded', function() {
-        startScanner();
-    });
-
-    // Clean up when leaving the page
+    // Cleanup when leaving the page
     window.addEventListener('beforeunload', function() {
-        stopScanner();
+        if (html5QrCode) {
+            html5QrCode.stop();
+        }
+        if (camera.srcObject) {
+            camera.srcObject.getTracks().forEach(track => track.stop());
+        }
     });
+});
 </script>
 {% endblock %}
