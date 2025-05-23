@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
 from datetime import timedelta
+from sqlalchemy import event
+from sqlalchemy.engine import Engine
+import sqlite3
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -29,6 +32,10 @@ def create_app():
         if database_url.startswith('postgres://'):
             database_url = database_url.replace('postgres://', 'postgresql://', 1)
         
+        # Add connection pooling settings for serverless
+        if 'postgresql' in database_url:
+            database_url += '?sslmode=require&pool_size=5&max_overflow=10'
+        
         app.config['SQLALCHEMY_DATABASE_URI'] = database_url
         print(f"Using production database: {database_url}")
     else:
@@ -37,6 +44,10 @@ def create_app():
         print("Using development database: sqlite:///app.db")
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+        'pool_pre_ping': True,
+        'pool_recycle': 300,
+    }
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 7 days
     app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_HTTPONLY'] = True
