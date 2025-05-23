@@ -2,6 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import os
+from datetime import timedelta
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -15,18 +16,20 @@ def create_app():
     app = Flask(__name__)
     
     # Configuration
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'd4e0e9c16ccc43806865ea863b7c8178651fdb5edeb564789751d5219bcc0ad2')
     
     # Database configuration
     if os.environ.get('VERCEL_ENV') == 'production':
         # For production, use a persistent database URL
         app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+        if app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgres://'):
+            app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace('postgres://', 'postgresql://', 1)
     else:
         # For development, use SQLite
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 7 days
     app.config['SESSION_COOKIE_SECURE'] = True
     app.config['SESSION_COOKIE_HTTPONLY'] = True
     app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
@@ -43,7 +46,10 @@ def create_app():
     
     # Create database tables
     with app.app_context():
-        db.create_all()
+        try:
+            db.create_all()
+        except Exception as e:
+            print(f"Error creating database tables: {e}")
     
     return app
 

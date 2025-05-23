@@ -117,24 +117,40 @@ def login():
 
 @main.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        password = request.form.get('password')
-        
-        if User.query.filter_by(email=email).first():
-            flash('Email already registered', 'danger')
-            return redirect(url_for('main.signup'))
-        
-        user = User(name=name, email=email)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        
-        login_user(user)
-        flash('Account created successfully!', 'success')
-        return redirect(url_for('main.index'))
-    return render_template('signup.html')
+    try:
+        if request.method == 'POST':
+            name = request.form.get('name')
+            email = request.form.get('email')
+            password = request.form.get('password')
+            
+            if not all([name, email, password]):
+                flash('All fields are required', 'danger')
+                return redirect(url_for('main.signup'))
+            
+            try:
+                if User.query.filter_by(email=email).first():
+                    flash('Email already registered', 'danger')
+                    return redirect(url_for('main.signup'))
+                
+                user = User(name=name, email=email)
+                user.set_password(password)
+                db.session.add(user)
+                db.session.commit()
+                
+                login_user(user)
+                flash('Account created successfully!', 'success')
+                return redirect(url_for('main.index'))
+            except Exception as e:
+                db.session.rollback()
+                print(f"Error during signup: {e}")
+                flash('An error occurred during signup. Please try again.', 'danger')
+                return redirect(url_for('main.signup'))
+                
+        return render_template('signup.html')
+    except Exception as e:
+        print(f"Unexpected error in signup route: {e}")
+        flash('An unexpected error occurred. Please try again.', 'danger')
+        return redirect(url_for('main.signup'))
 
 @main.route('/logout')
 @login_required
