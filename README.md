@@ -2,6 +2,30 @@
 
 GreenScan is an innovative web application that helps users make environmentally conscious decisions by scanning product barcodes and providing detailed information about their recyclability and environmental impact.
 
+---
+
+## ⚠️ Prototype Notice
+
+This is a prototype version of GreenScan. Currently, only 10 products are available in the database.
+
+### Available Products
+- **Bisleri Mineral Water Bottle** : 8906017290033  
+- **Lay's Classic Potato Chips** : 8901012000022  
+- **Coca-Cola Glass Bottle** : 8901012000039  
+- **Amul Milk Tetra Pack** : 8901012000046  
+- **Maggi Noodles Pack** : 8901012000053  
+- **Parle-G Biscuit Pack** : 8901012000060  
+- **Dabur Honey Glass Jar** : 8901012000077  
+- **Kurkure Snack Pack** : 8901012000084  
+- **Amul Butter Paper Pack** : 8901012000091  
+- **Sprite Plastic Bottle** : 8901012000107  
+
+### 🔗 Barcode Image Access
+You can access the barcode images (which can be used on the barcode scanner to test the app) through the following link:  
+[Barcode Image Folder on Google Drive](https://drive.google.com/drive/folders/1iaKOzFiKthmpcbKhoKwxVl65RhNtJZae?usp=sharing)
+
+---
+
 ## ✨ Features
 
 - 📱 **Barcode Scanning**: Scan product barcodes using your device's camera
@@ -13,6 +37,8 @@ GreenScan is an innovative web application that helps users make environmentally
 - 📝 **Recycling Instructions**: Get specific recycling guidelines
 - 👤 **User Profiles**: Track your scanning history and environmental impact
 
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -21,7 +47,7 @@ GreenScan is an innovative web application that helps users make environmentally
 - pip (Python package manager)
 - A modern web browser
 
-### Installation
+### Installation (Locally)
 
 1. Clone the repository:
 ```bash
@@ -52,6 +78,8 @@ flask run
 
 The application will be available at `http://localhost:5000`
 
+---
+
 ## 🛠️ Technology Stack
 
 - **Backend**: Python Flask
@@ -60,6 +88,8 @@ The application will be available at `http://localhost:5000`
 - **Barcode Scanning**: HTML5-QRCode
 - **Styling**: Bootstrap 5
 - **Icons**: Font Awesome
+
+---
 
 ## 📱 Usage
 
@@ -78,6 +108,8 @@ The application will be available at `http://localhost:5000`
    - Use the search bar to find products
    - Filter by name or barcode
    - View detailed product information
+
+---
 
 ## 🤝 Contributing
 
