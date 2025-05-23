@@ -7,7 +7,9 @@ import json
 from flask import jsonify
 import os
 from datetime import datetime
+import logging
 
+logger = logging.getLogger(__name__)
 main = Blueprint('main', __name__)
 
 # Load products data
@@ -25,10 +27,10 @@ def load_products():
             with open(file_path, 'r') as f:
                 return json.load(f)
                 
-        print("Warning: products.json not found")
+        logger.warning("products.json not found")
         return []
     except Exception as e:
-        print(f"Error loading products: {e}")
+        logger.error(f"Error loading products: {e}")
         return []
 
 @main.route('/')
@@ -123,10 +125,10 @@ def signup():
             email = request.form.get('email')
             password = request.form.get('password')
             
-            print(f"Signup attempt - Name: {name}, Email: {email}")  # Log signup attempt
+            logger.info(f"Signup attempt - Name: {name}, Email: {email}")
             
             if not all([name, email, password]):
-                print("Missing required fields")  # Log missing fields
+                logger.warning("Missing required fields")
                 flash('All fields are required', 'danger')
                 return redirect(url_for('main.signup'))
             
@@ -134,7 +136,7 @@ def signup():
                 # Check if user exists
                 existing_user = User.query.filter_by(email=email).first()
                 if existing_user:
-                    print(f"Email already registered: {email}")  # Log duplicate email
+                    logger.info(f"Email already registered: {email}")
                     flash('Email already registered', 'danger')
                     return redirect(url_for('main.signup'))
                 
@@ -142,25 +144,25 @@ def signup():
                 user = User(name=name, email=email)
                 user.set_password(password)
                 
-                print("Attempting to add user to database")  # Log database operation
+                logger.info("Attempting to add user to database")
                 db.session.add(user)
                 db.session.commit()
-                print("User successfully added to database")  # Log success
+                logger.info("User successfully added to database")
                 
                 login_user(user)
                 flash('Account created successfully!', 'success')
                 return redirect(url_for('main.index'))
             except Exception as e:
                 db.session.rollback()
-                print(f"Database error during signup: {str(e)}")  # Log database error
-                print(f"Error type: {type(e)}")  # Log error type
+                logger.error(f"Database error during signup: {str(e)}")
+                logger.error(f"Error type: {type(e)}")
                 flash('An error occurred during signup. Please try again.', 'danger')
                 return redirect(url_for('main.signup'))
                 
         return render_template('signup.html')
     except Exception as e:
-        print(f"Unexpected error in signup route: {str(e)}")  # Log unexpected error
-        print(f"Error type: {type(e)}")  # Log error type
+        logger.error(f"Unexpected error in signup route: {str(e)}")
+        logger.error(f"Error type: {type(e)}")
         flash('An unexpected error occurred. Please try again.', 'danger')
         return redirect(url_for('main.signup'))
 

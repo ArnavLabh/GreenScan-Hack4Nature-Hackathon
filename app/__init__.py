@@ -6,6 +6,11 @@ from datetime import timedelta
 from sqlalchemy import event
 from sqlalchemy.engine import Engine
 import sqlite3
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -26,27 +31,26 @@ def create_app():
         # For production, use a persistent database URL
         database_url = os.environ.get('DATABASE_URL')
         if not database_url:
-            print("Warning: DATABASE_URL not set in production environment")
+            logger.error("DATABASE_URL not set in production environment")
             database_url = 'sqlite:///app.db'
         
         if database_url.startswith('postgres://'):
             database_url = database_url.replace('postgres://', 'postgresql://', 1)
         
-        # Add connection pooling settings for serverless
-        if 'postgresql' in database_url:
-            database_url += '?sslmode=require&pool_size=5&max_overflow=10'
-        
         app.config['SQLALCHEMY_DATABASE_URI'] = database_url
-        print(f"Using production database: {database_url}")
+        logger.info(f"Using production database: {database_url}")
     else:
         # For development, use SQLite
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
-        print("Using development database: sqlite:///app.db")
+        logger.info("Using development database: sqlite:///app.db")
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
         'pool_pre_ping': True,
         'pool_recycle': 300,
+        'pool_timeout': 30,
+        'max_overflow': 2,
+        'pool_size': 1
     }
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 7 days
     app.config['SESSION_COOKIE_SECURE'] = True
@@ -66,12 +70,22 @@ def create_app():
     # Create database tables
     with app.app_context():
         try:
-            print("Attempting to create database tables...")
+            logger.info("Attempting to create database tables...")
             db.create_all()
-            print("Database tables created successfully")
+            logger.info("Database tables created successfully")
         except Exception as e:
-            print(f"Error creating database tables: {str(e)}")
-            print(f"Error type: {type(e)}")
+            logger.error(f"Error creating database tables: {str(e)}")
+            logger.error(f"Error type: {type(e)}")
+    
+    @app.errorhandler(500)
+    def handle_500_error(e):
+        logger.error(f"500 error occurred: {str(e)}")
+        return "Internal Server Error", 500
+    
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        logger.error(f"Unhandled exception: {str(e)}")
+        return "Internal Server Error", 500
     
     return app
 
