@@ -16,7 +16,15 @@ def create_app():
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    
+    # Database configuration
+    if os.environ.get('VERCEL_ENV') == 'production':
+        # For production, use a persistent database URL
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+    else:
+        # For development, use SQLite
+        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+    
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PERMANENT_SESSION_LIFETIME'] = 1800  # 30 minutes
     app.config['SESSION_COOKIE_SECURE'] = True
