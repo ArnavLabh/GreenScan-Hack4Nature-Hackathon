@@ -1,58 +1,73 @@
 {% extends "base.html" %}
 
-{% block title %}Search - GreenScan{% endblock %}
+{% block title %}Search Products - GreenScan{% endblock %}
 
 {% block content %}
 <div class="container py-4">
     <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="col-lg-8 mx-auto">
             <div class="card shadow-sm">
-                <div class="card-body">
-                    <h2 class="card-title mb-4">Search Products</h2>
-                    <form action="{{ url_for('main.search') }}" method="get" class="mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-4 text-center">
+                        <i class="fas fa-search me-2"></i>Search Products
+                    </h2>
+                    
+                    <!-- Search Form -->
+                    <form method="GET" class="mb-4">
                         <div class="input-group">
-                            <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ query }}">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-search"></i> Search
+                            <input type="text" class="form-control" name="query" placeholder="Search by product name..." value="{{ request.args.get('query', '') }}">
+                            <button class="btn btn-success" type="submit">
+                                <i class="fas fa-search me-1"></i>Search
                             </button>
                         </div>
                     </form>
 
-                    {% if query %}
-                        <h5 class="mb-3">Results for "{{ query }}"</h5>
-                    {% endif %}
-
-                    {% if products %}
-                        <div class="row">
-                            {% for product in products %}
-                            <div class="col-md-6 mb-4">
-                                <div class="card h-100">
-                                    {% if product.image_url %}
-                                    <img src="{{ product.image_url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: contain;">
-                                    {% endif %}
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{ product.name }}</h5>
-                                        <p class="card-text">
-                                            <span class="badge bg-{{ 'success' if product.category in ['Glass', 'Paper'] else 'danger' }}">
-                                                {{ 'Recyclable' if product.category in ['Glass', 'Paper'] else 'Not Recyclable' }}
-                                            </span>
-                                            <span class="badge bg-info ms-2">{{ product.category }}</span>
-                                        </p>
-                                        <form action="{{ url_for('main.result') }}" method="post">
-                                            <input type="hidden" name="barcode" value="{{ product.barcode }}">
-                                            <button type="submit" class="btn btn-outline-success btn-sm">
-                                                <i class="fas fa-info-circle me-1"></i>View Details
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <label class="form-label">Filter by Category:</label>
+                        <div class="btn-group w-100" role="group">
+                            <a href="{{ url_for('main.search') }}" class="btn btn-outline-success {% if not request.args.get('category') %}active{% endif %}">All</a>
+                            {% for category in categories %}
+                            <a href="{{ url_for('main.search', category=category) }}" 
+                               class="btn btn-outline-success {% if request.args.get('category') == category %}active{% endif %}">
+                                {{ category }}
+                            </a>
                             {% endfor %}
                         </div>
-                    {% elif query %}
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>No products found matching "{{ query }}"
+                    </div>
+
+                    <!-- Products List -->
+                    {% if products %}
+                    <div class="list-group">
+                        {% for product in products %}
+                        <div class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-1">{{ product.name }}</h5>
+                                    <p class="mb-1 text-muted">
+                                        <i class="fas fa-barcode me-1"></i>{{ product.barcode }}
+                                    </p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge {% if product.category in ['Glass', 'Paper'] %}bg-success{% else %}bg-danger{% endif %} rounded-pill me-2">
+                                        {{ product.category }}
+                                    </span>
+                                    <form action="{{ url_for('main.result') }}" method="POST" class="d-inline">
+                                        <input type="hidden" name="barcode" value="{{ product.barcode }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-info-circle me-1"></i>Details
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No products found. Try a different search term or category.</p>
+                    </div>
                     {% endif %}
                 </div>
             </div>

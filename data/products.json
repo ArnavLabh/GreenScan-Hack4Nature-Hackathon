@@ -3,190 +3,226 @@
         "barcode": "8906017290033",
         "name": "Bisleri Mineral Water Bottle",
         "category": "Plastic",
-        "instructions": "Rinse and recycle with plastics",
-        "environmental_impact": "High",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Remove cap and label",
-            "Rinse thoroughly",
+        "image_url": "https://m.media-amazon.com/images/I/61ZfiqZsWGL.jpg",
+        "description": "500ml mineral water bottle made from PET plastic",
+        "manufacturer": "Bisleri International",
+        "weight": "500ml",
+        "recyclability": "recyclable",
+        "recycling_instructions": [
+            "Empty the bottle completely",
+            "Remove the cap and label",
+            "Rinse thoroughly with water",
             "Flatten to save space",
-            "Check local recycling guidelines"
+            "Place in plastic recycling bin"
         ],
-        "alternative_products": [
-            "Reusable stainless steel bottle",
-            "Glass water bottle",
-            "BPA-free reusable plastic bottle"
+        "disposal_information": "If not recyclable, empty contents and dispose in general waste bin. Never litter.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Use a reusable stainless steel water bottle",
+            "Invest in a glass water bottle",
+            "Choose BPA-free reusable plastic bottles",
+            "Install a water filter at home"
         ]
     },
     {
         "barcode": "8901012000022",
         "name": "Lay's Classic Potato Chips",
         "category": "Plastic",
-        "instructions": "Clean and recycle with plastic films",
-        "environmental_impact": "High",
         "image_url": "https://m.media-amazon.com/images/I/81vJyb43URL._SL1500_.jpg",
-        "recycling_tips": [
-            "Clean thoroughly",
-            "Remove any food residue",
-            "Check local recycling guidelines",
-            "Consider upcycling"
-        ],
-        "alternative_products": [
-            "Homemade chips",
-            "Bulk snacks in reusable containers",
-            "Snacks in paper packaging"
+        "description": "Classic salted potato chips in a plastic film package",
+        "manufacturer": "PepsiCo",
+        "weight": "30g",
+        "recyclability": "non-recyclable",
+        "recycling_instructions": [],
+        "disposal_information": "Empty any remaining contents into compost or food waste bin. Clean the package and dispose in general waste bin. The thin plastic film is not typically recyclable in most facilities.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Make homemade chips using fresh potatoes",
+            "Buy bulk snacks in reusable containers",
+            "Choose snacks packaged in paper or cardboard",
+            "Support local vendors who use minimal packaging"
         ]
     },
     {
         "barcode": "8901012000039",
         "name": "Coca-Cola Glass Bottle",
         "category": "Glass",
-        "instructions": "Return to store or recycle with glass",
-        "environmental_impact": "Low",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Remove metal cap",
-            "Rinse thoroughly",
-            "Check for cracks",
-            "Return to store if possible"
+        "image_url": "https://m.media-amazon.com/images/I/71c3dktHYHL.jpg",
+        "description": "300ml Coca-Cola in a returnable glass bottle",
+        "manufacturer": "Coca-Cola Company",
+        "weight": "300ml",
+        "recyclability": "recyclable",
+        "recycling_instructions": [
+            "Empty the bottle completely",
+            "Remove the metal cap",
+            "Rinse thoroughly with water",
+            "Check for any cracks or damage",
+            "Return to store if possible, otherwise place in glass recycling bin"
         ],
-        "alternative_products": [
-            "Aluminum cans",
-            "Plastic bottles (recyclable)",
-            "Reusable water bottle"
+        "disposal_information": "Glass bottles can be returned to stores for reuse. If not possible, ensure proper recycling through glass recycling bins.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Choose aluminum cans (highly recyclable)",
+            "Use reusable water bottles",
+            "Make homemade carbonated drinks",
+            "Support local beverage makers using returnable bottles"
         ]
     },
     {
         "barcode": "8901012000046",
         "name": "Amul Milk Tetra Pack",
         "category": "Paper",
-        "instructions": "Rinse and recycle with paper products",
-        "environmental_impact": "Medium",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Rinse thoroughly",
-            "Flatten completely",
-            "Remove plastic cap",
-            "Check local recycling guidelines"
+        "image_url": "https://m.media-amazon.com/images/I/61cogxkr+xL.jpg",
+        "description": "1 liter milk in Tetra Pak packaging",
+        "manufacturer": "Amul",
+        "weight": "1L",
+        "recyclability": "recyclable",
+        "recycling_instructions": [
+            "Empty the container completely",
+            "Rinse thoroughly with water",
+            "Remove the plastic cap",
+            "Flatten the container",
+            "Place in paper recycling bin"
         ],
-        "alternative_products": [
-            "Glass milk bottles",
-            "Reusable containers",
-            "Local milk delivery"
+        "disposal_information": "Tetra Pak can be recycled in facilities that accept composite materials. If not available, dispose in general waste bin after cleaning.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Use glass milk bottles from local dairies",
+            "Buy milk in reusable containers",
+            "Support local milk delivery services",
+            "Consider plant-based milk alternatives in recyclable packaging"
         ]
     },
     {
         "barcode": "8901012000053",
         "name": "Maggi Noodles Pack",
         "category": "Plastic",
-        "instructions": "Clean and recycle with plastics",
-        "environmental_impact": "Medium",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Clean thoroughly",
-            "Remove any food residue",
-            "Check recycling number",
-            "Consider upcycling"
-        ],
-        "alternative_products": [
-            "Fresh noodles",
-            "Homemade noodles",
-            "Bulk pasta in paper packaging"
+        "image_url": "https://m.media-amazon.com/images/I/71T0QfFl+3L._AC_UF894,1000_QL80_.jpg",
+        "description": "Instant noodles in plastic packaging",
+        "manufacturer": "Nestlé",
+        "weight": "70g",
+        "recyclability": "non-recyclable",
+        "recycling_instructions": [],
+        "disposal_information": "Clean any remaining food residue and dispose in general waste bin. The plastic film is not typically recyclable in most facilities.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Make fresh noodles at home",
+            "Buy bulk pasta in paper packaging",
+            "Choose noodles in recyclable packaging",
+            "Support local noodle makers using minimal packaging"
         ]
     },
     {
         "barcode": "8901012000060",
         "name": "Parle-G Biscuit Pack",
         "category": "Plastic",
-        "instructions": "Clean and recycle with plastics",
-        "environmental_impact": "Medium",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Clean thoroughly",
-            "Remove any food residue",
-            "Check recycling number",
-            "Consider upcycling"
-        ],
-        "alternative_products": [
-            "Homemade cookies",
-            "Bulk cookies in reusable containers",
-            "Cookies in paper packaging"
+        "image_url": "https://m.media-amazon.com/images/I/81cUAQE4YpL.jpg",
+        "description": "Glucose biscuits in plastic packaging",
+        "manufacturer": "Parle Products",
+        "weight": "100g",
+        "recyclability": "non-recyclable",
+        "recycling_instructions": [],
+        "disposal_information": "Clean any remaining crumbs and dispose in general waste bin. The plastic film is not typically recyclable in most facilities.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Bake homemade cookies",
+            "Buy bulk cookies in reusable containers",
+            "Choose cookies in paper packaging",
+            "Support local bakeries using minimal packaging"
         ]
     },
     {
         "barcode": "8901012000077",
         "name": "Dabur Honey Glass Jar",
         "category": "Glass",
-        "instructions": "Clean and recycle with glass",
-        "environmental_impact": "Low",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Remove metal lid",
-            "Clean thoroughly",
+        "image_url": "https://m.media-amazon.com/images/I/91IxMu+QkUL.jpg",
+        "description": "Pure honey in a glass jar",
+        "manufacturer": "Dabur",
+        "weight": "500g",
+        "recyclability": "recyclable",
+        "recycling_instructions": [
+            "Empty the jar completely",
+            "Remove the metal lid",
+            "Clean thoroughly with warm water",
             "Remove label if possible",
-            "Consider upcycling"
+            "Place in glass recycling bin"
         ],
-        "alternative_products": [
-            "Local honey in reusable containers",
-            "Bulk honey in glass jars",
-            "Honey in paper packaging"
+        "disposal_information": "Glass jars can be recycled indefinitely. Ensure proper cleaning before recycling.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Buy honey from local beekeepers",
+            "Choose honey in reusable containers",
+            "Support sustainable beekeeping practices",
+            "Consider bulk honey purchases in glass containers"
         ]
     },
     {
         "barcode": "8901012000084",
         "name": "Kurkure Snack Pack",
         "category": "Plastic",
-        "instructions": "Clean and recycle with plastic films",
-        "environmental_impact": "High",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Clean thoroughly",
-            "Remove any food residue",
-            "Check local recycling guidelines",
-            "Consider upcycling"
-        ],
-        "alternative_products": [
-            "Homemade snacks",
-            "Bulk snacks in reusable containers",
-            "Snacks in paper packaging"
+        "image_url": "https://m.media-amazon.com/images/I/61p3f0+LUaL._AC_UF894,1000_QL80_.jpg",
+        "description": "Spicy corn snacks in plastic packaging",
+        "manufacturer": "PepsiCo",
+        "weight": "90g",
+        "recyclability": "non-recyclable",
+        "recycling_instructions": [],
+        "disposal_information": "Clean any remaining food residue and dispose in general waste bin. The plastic film is not typically recyclable in most facilities.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Make homemade spicy snacks",
+            "Buy bulk snacks in reusable containers",
+            "Choose snacks in paper packaging",
+            "Support local vendors using minimal packaging"
         ]
     },
     {
         "barcode": "8901012000091",
         "name": "Amul Butter Paper Pack",
         "category": "Paper",
-        "instructions": "Clean and recycle with paper products",
-        "environmental_impact": "Low",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Remove any food residue",
+        "image_url": "https://www.jiomart.com/images/product/original/494428424/amul-butter-chiplets-320-g-product-images-o494428424-p610100679-0-202410151834.jpg?im=Resize=(1000,1000)",
+        "description": "Butter in paper packaging",
+        "manufacturer": "Amul",
+        "weight": "320g",
+        "recyclability": "recyclable",
+        "recycling_instructions": [
+            "Remove any remaining butter",
+            "Clean with warm water",
             "Check for wax coating",
-            "Flatten completely",
-            "Check local recycling guidelines"
+            "Flatten the packaging",
+            "Place in paper recycling bin"
         ],
-        "alternative_products": [
-            "Butter in reusable containers",
-            "Local butter in paper packaging",
-            "Homemade butter"
+        "disposal_information": "Paper packaging can be recycled if clean and free from food residue. If wax-coated, check local recycling guidelines.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Buy butter in reusable containers",
+            "Support local dairies using minimal packaging",
+            "Make homemade butter",
+            "Choose butter in recyclable packaging"
         ]
     },
     {
         "barcode": "8901012000107",
         "name": "Sprite Plastic Bottle",
         "category": "Plastic",
-        "instructions": "Rinse and recycle with plastics",
-        "environmental_impact": "High",
-        "image_url": "https://m.media-amazon.com/images/I/71QKQ9mwV7L._SL1500_.jpg",
-        "recycling_tips": [
-            "Remove cap and label",
-            "Rinse thoroughly",
+        "image_url": "https://m.media-amazon.com/images/I/41MD13Rg7JL.jpg",
+        "description": "600ml Sprite in PET plastic bottle",
+        "manufacturer": "Coca-Cola Company",
+        "weight": "600ml",
+        "recyclability": "recyclable",
+        "recycling_instructions": [
+            "Empty the bottle completely",
+            "Remove the cap and label",
+            "Rinse thoroughly with water",
             "Flatten to save space",
-            "Check local recycling guidelines"
+            "Place in plastic recycling bin"
         ],
-        "alternative_products": [
-            "Glass bottles",
-            "Aluminum cans",
-            "Reusable water bottle"
+        "disposal_information": "PET plastic bottles are widely recyclable. Ensure proper cleaning before recycling.",
+        "hazardous": false,
+        "eco_alternatives": [
+            "Choose glass bottles",
+            "Use aluminum cans",
+            "Invest in a reusable water bottle",
+            "Make homemade carbonated drinks"
         ]
     }
 ]

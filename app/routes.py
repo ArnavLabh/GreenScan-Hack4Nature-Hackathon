@@ -31,7 +31,23 @@ def scan():
 @main.route('/search')
 @login_required
 def search():
-    return render_template('search.html')
+    query = request.args.get('query', '').strip()
+    category = request.args.get('category')
+    
+    products = load_products()
+    categories = list(set(p['category'] for p in products))
+    
+    if query:
+        products = [p for p in products if query.lower() in p['name'].lower()]
+    
+    if category:
+        products = [p for p in products if p['category'] == category]
+    
+    return render_template('search.html', 
+                         products=products,
+                         categories=categories,
+                         query=query,
+                         category=category)
 
 @main.route('/result', methods=['POST'])
 @login_required
@@ -163,3 +179,8 @@ def get_stats():
         'recycling_impact': recyclable_count,
         'recent_activity': recent_activity
     })
+
+@main.route('/image-recognition')
+@login_required
+def image_recognition():
+    return render_template('image_recognition.html')

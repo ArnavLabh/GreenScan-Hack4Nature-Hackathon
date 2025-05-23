@@ -1,85 +1,138 @@
 {% extends "base.html" %}
 
-{% block content %}
-<div class="row align-items-center min-vh-75">
-    <div class="col-md-6">
-        <h1 class="display-4 mb-4">Make Recycling Smarter with GreenScan</h1>
-        <p class="lead mb-4">Scan product barcodes to get instant recycling instructions, environmental impact assessment, and sustainable alternatives.</p>
-        <div class="d-grid gap-2 d-md-flex">
-            <a href="{{ url_for('main.scan') }}" class="btn btn-success btn-lg">
-                <i class="fas fa-barcode me-2"></i>Start Scanning
-            </a>
-            <button class="btn btn-outline-success btn-lg" data-bs-toggle="modal" data-bs-target="#howItWorksModal">
-                <i class="fas fa-info-circle me-2"></i>How It Works
-            </button>
-        </div>
-    </div>
-    <div class="col-md-6">
-        <img src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?w=800" alt="Recycling Illustration" class="img-fluid rounded shadow">
-    </div>
-</div>
+{% block title %}Home - GreenScan{% endblock %}
 
-<div class="row mt-5">
-    <div class="col-12">
-        <h2 class="text-center mb-4">Why Choose GreenScan?</h2>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body text-center">
-                <i class="fas fa-bolt text-success fa-3x mb-3"></i>
-                <h3 class="h5">Instant Results</h3>
-                <p>Get immediate recycling instructions and environmental impact assessment with a simple scan.</p>
+   {% block content %}
+<div class="container py-4">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-leaf me-2"></i>Welcome to GreenScan
+            </h1>
+            <p class="lead text-muted mb-4">
+                Scan products to instantly know if they're recyclable and get detailed recycling instructions.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('main.scan') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-camera me-2"></i>Start Scanning
+                </a>
+                <a href="{{ url_for('main.search') }}" class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-search me-2"></i>Search Products
+                </a>
             </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body text-center">
-                <i class="fas fa-leaf text-success fa-3x mb-3"></i>
-                <h3 class="h5">Eco-Friendly Tips</h3>
-                <p>Discover sustainable alternatives and best practices for recycling different materials.</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card h-100 border-0 shadow-sm">
-            <div class="card-body text-center">
-                <i class="fas fa-chart-line text-success fa-3x mb-3"></i>
-                <h3 class="h5">Track Progress</h3>
-                <p>Monitor your recycling habits and environmental impact over time.</p>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- How It Works Modal -->
-<div class="modal fade" id="howItWorksModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">How GreenScan Works</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Features Section -->
+    <div class="row mb-5">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-camera fa-3x"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Quick Scan</h3>
+                    <p class="text-muted mb-0">
+                        Simply scan any product's barcode to instantly know if it's recyclable.
+                    </p>
+                </div>
             </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-4 text-center mb-3">
-                        <i class="fas fa-barcode fa-3x text-success mb-3"></i>
-                        <h6>1. Scan Barcode</h6>
-                        <p>Use your device's camera to scan any product barcode</p>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-info-circle fa-3x"></i>
                     </div>
-                    <div class="col-md-4 text-center mb-3">
-                        <i class="fas fa-search fa-3x text-success mb-3"></i>
-                        <h6>2. Get Information</h6>
-                        <p>Receive detailed recycling instructions and environmental impact</p>
+                    <h3 class="h4 mb-3">Detailed Info</h3>
+                    <p class="text-muted mb-0">
+                        Get comprehensive recycling instructions and eco-friendly alternatives.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-history fa-3x"></i>
                     </div>
-                    <div class="col-md-4 text-center mb-3">
-                        <i class="fas fa-lightbulb fa-3x text-success mb-3"></i>
-                        <h6>3. Learn & Improve</h6>
-                        <p>Discover sustainable alternatives and best practices</p>
+                    <h3 class="h4 mb-3">Track Progress</h3>
+                    <p class="text-muted mb-0">
+                        Keep track of your recycling habits and environmental impact.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works Section -->
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-4 text-center">How It Works</h2>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <div class="step-icon mb-3">
+                                <i class="fas fa-camera fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-2">1. Scan</h4>
+                            <p class="text-muted mb-0">Use your camera to scan any product barcode</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4 mb-md-0">
+                            <div class="step-icon mb-3">
+                                <i class="fas fa-search fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-2">2. Check</h4>
+                            <p class="text-muted mb-0">Get instant recycling information</p>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <div class="step-icon mb-3">
+                                <i class="fas fa-recycle fa-2x"></i>
+                            </div>
+                            <h4 class="h5 mb-2">3. Recycle</h4>
+                            <p class="text-muted mb-0">Follow the instructions to recycle properly</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
+
+<style>
+.feature-icon {
+    width: 80px;
+    height: 80px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: #198754;
+}
+
+.step-icon {
+    width: 60px;
+    height: 60px;
+    background-color: #f8f9fa;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    color: #198754;
+}
+
+.card {
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+</style>
+   {% endblock %}
