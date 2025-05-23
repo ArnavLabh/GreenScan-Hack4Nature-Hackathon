@@ -25,7 +25,7 @@ GreenScan is an innovative web application that helps users make environmentally
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/greenscan.git
+git clone https://github.com/ArnavLabh/GreenScan-Hack4Nature-Hackathon.git
 cd greenscan
 ```
 
