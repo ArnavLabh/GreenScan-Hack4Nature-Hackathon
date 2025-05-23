@@ -1,4 +1,4 @@
-# 🌱 GreenScan - Sustainable Product Scanner
+# GreenScan - Sustainable Product Scanner
 
 GreenScan is an innovative web application that helps users make environmentally conscious decisions by scanning product barcodes and providing detailed information about their recyclability and environmental impact.
 
@@ -88,20 +88,3 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [HTML5-QRCode](https://github.com/mebjas/html5-qrcode) for barcode scanning
-- [Bootstrap](https://getbootstrap.com/) for UI components
-- [Font Awesome](https://fontawesome.com/) for icons
-- [Unsplash](https://unsplash.com/) for product images
-
-## 📧 Contact
-
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter) - email@example.com
-
-Project Link: [https://github.com/yourusername/greenscan](https://github.com/yourusername/greenscan)
