@@ -123,32 +123,44 @@ def signup():
             email = request.form.get('email')
             password = request.form.get('password')
             
+            print(f"Signup attempt - Name: {name}, Email: {email}")  # Log signup attempt
+            
             if not all([name, email, password]):
+                print("Missing required fields")  # Log missing fields
                 flash('All fields are required', 'danger')
                 return redirect(url_for('main.signup'))
             
             try:
-                if User.query.filter_by(email=email).first():
+                # Check if user exists
+                existing_user = User.query.filter_by(email=email).first()
+                if existing_user:
+                    print(f"Email already registered: {email}")  # Log duplicate email
                     flash('Email already registered', 'danger')
                     return redirect(url_for('main.signup'))
                 
+                # Create new user
                 user = User(name=name, email=email)
                 user.set_password(password)
+                
+                print("Attempting to add user to database")  # Log database operation
                 db.session.add(user)
                 db.session.commit()
+                print("User successfully added to database")  # Log success
                 
                 login_user(user)
                 flash('Account created successfully!', 'success')
                 return redirect(url_for('main.index'))
             except Exception as e:
                 db.session.rollback()
-                print(f"Error during signup: {e}")
+                print(f"Database error during signup: {str(e)}")  # Log database error
+                print(f"Error type: {type(e)}")  # Log error type
                 flash('An error occurred during signup. Please try again.', 'danger')
                 return redirect(url_for('main.signup'))
                 
         return render_template('signup.html')
     except Exception as e:
-        print(f"Unexpected error in signup route: {e}")
+        print(f"Unexpected error in signup route: {str(e)}")  # Log unexpected error
+        print(f"Error type: {type(e)}")  # Log error type
         flash('An unexpected error occurred. Please try again.', 'danger')
         return redirect(url_for('main.signup'))
 

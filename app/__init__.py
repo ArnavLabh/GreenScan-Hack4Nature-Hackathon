@@ -21,12 +21,20 @@ def create_app():
     # Database configuration
     if os.environ.get('VERCEL_ENV') == 'production':
         # For production, use a persistent database URL
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
-        if app.config['SQLALCHEMY_DATABASE_URI'].startswith('postgres://'):
-            app.config['SQLALCHEMY_DATABASE_URI'] = app.config['SQLALCHEMY_DATABASE_URI'].replace('postgres://', 'postgresql://', 1)
+        database_url = os.environ.get('DATABASE_URL')
+        if not database_url:
+            print("Warning: DATABASE_URL not set in production environment")
+            database_url = 'sqlite:///app.db'
+        
+        if database_url.startswith('postgres://'):
+            database_url = database_url.replace('postgres://', 'postgresql://', 1)
+        
+        app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+        print(f"Using production database: {database_url}")
     else:
         # For development, use SQLite
         app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+        print("Using development database: sqlite:///app.db")
     
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 7 days
@@ -47,9 +55,12 @@ def create_app():
     # Create database tables
     with app.app_context():
         try:
+            print("Attempting to create database tables...")
             db.create_all()
+            print("Database tables created successfully")
         except Exception as e:
-            print(f"Error creating database tables: {e}")
+            print(f"Error creating database tables: {str(e)}")
+            print(f"Error type: {type(e)}")
     
     return app
 
