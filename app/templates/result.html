@@ -1,116 +1,209 @@
 {% extends "base.html" %}
 
-{% block title %}Scan Result - GreenScan{% endblock %}
+{% block title %}Product Details - GreenScan{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    {% if product %}
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card shadow-lg border-0 rounded-lg">
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- Product Header -->
+            <div class="card shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <!-- Product Header -->
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <img src="{{ product.image }}" alt="{{ product.name }}" class="img-fluid rounded">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 text-center">
+                            {% if product.image_url %}
+                            <img src="{{ product.image_url }}" class="img-fluid product-image" alt="{{ product.name }}">
+                            {% else %}
+                            <div class="no-image-placeholder">
+                                <i class="fas fa-box fa-4x"></i>
+                            </div>
+                            {% endif %}
                         </div>
                         <div class="col-md-8">
-                            <h2 class="mb-3">{{ product.name }}</h2>
+                            <h1 class="h2 mb-3">{{ product.name }}</h1>
                             <div class="d-flex align-items-center mb-3">
-                                <span class="badge bg-{{ 'success' if product.recyclable else 'danger' }} me-2">
+                                <span class="badge bg-{{ 'success' if product.recyclable else 'danger' }} fs-6 me-2">
                                     {{ 'Recyclable' if product.recyclable else 'Not Recyclable' }}
                                 </span>
-                                <span class="badge bg-info">{{ product.category }}</span>
+                                <span class="badge bg-info fs-6">{{ product.category }}</span>
                             </div>
-                            <div class="progress mb-3" style="height: 10px;">
-                                <div class="progress-bar bg-success" role="progressbar" style="width: {{ product.sustainability_score }}%;" aria-valuenow="{{ product.sustainability_score }}" aria-valuemin="0" aria-valuemax="100">
-                                </div>
-                            </div>
-                            <p class="text-muted mb-0">Sustainability Score: {{ product.sustainability_score }}/100</p>
-                        </div>
-                    </div>
-
-                    <!-- Environmental Impact -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="mb-3">Environmental Impact</h4>
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <p class="mb-2">{{ product.environmental_impact }}</p>
-                                    <p class="mb-0"><strong>Carbon Footprint:</strong> {{ product.carbon_footprint }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Recycling Instructions -->
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <h4 class="mb-3">Recycling Instructions</h4>
-                            <div class="card bg-light">
-                                <div class="card-body">
-                                    <p class="mb-3">{{ product.recycling_instructions }}</p>
-                                    <h6 class="mb-2">Recycling Code: {{ product.recycling_code }}</h6>
-                                    <h6 class="mb-2">Tips:</h6>
-                                    <ul class="mb-0">
-                                        {% for tip in product.recycling_tips %}
-                                        <li>{{ tip }}</li>
-                                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Sustainable Alternatives -->
-                    <div class="row">
-                        <div class="col-12">
-                            <h4 class="mb-3">Sustainable Alternatives</h4>
-                            <div class="row">
-                                {% for alternative in product.alternatives %}
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        <div class="card-body">
-                                            <h6 class="card-title">{{ alternative }}</h6>
-                                            <a href="{{ url_for('main.search') }}?q={{ alternative }}" class="btn btn-outline-success btn-sm">Find Options</a>
-                                        </div>
+                            <div class="sustainability-score mb-3">
+                                <div class="progress" style="height: 25px;">
+                                    <div class="progress-bar bg-success" role="progressbar" 
+                                         style="width: {{ product.sustainability_score }}%;" 
+                                         aria-valuenow="{{ product.sustainability_score }}" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                        Sustainability Score: {{ product.sustainability_score }}%
                                     </div>
                                 </div>
-                                {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    {% else %}
-    <div class="row justify-content-center">
-        <div class="col-md-6 text-center">
-            <div class="card shadow-lg border-0 rounded-lg">
-                <div class="card-body p-5">
-                    <i class="fas fa-exclamation-circle text-warning fa-3x mb-3"></i>
-                    <h3 class="mb-3">Product Not Found</h3>
-                    <p class="text-muted mb-4">We couldn't find information for this product in our database.</p>
-                    <a href="{{ url_for('main.scan') }}" class="btn btn-primary me-2">Scan Again</a>
-                    <a href="{{ url_for('main.search') }}" class="btn btn-outline-primary">Search Products</a>
+
+            <!-- Main Content -->
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6 mb-4">
+                    <!-- Recycling Instructions -->
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h4 mb-4">
+                                <i class="fas fa-recycle text-success me-2"></i>
+                                Recycling Instructions
+                            </h3>
+                            <p class="mb-4">{{ product.recycling_instructions }}</p>
+                            {% if product.recycling_tips %}
+                            <div class="recycling-tips">
+                                <h4 class="h5 mb-3">Tips for Recycling:</h4>
+                                <ul class="list-unstyled">
+                                    {% for tip in product.recycling_tips %}
+                                    <li class="mb-2">
+                                        <i class="fas fa-check-circle text-success me-2"></i>
+                                        {{ tip }}
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6 mb-4">
+                    <!-- Environmental Impact -->
+                    <div class="card shadow-sm h-100">
+                        <div class="card-body p-4">
+                            <h3 class="h4 mb-4">
+                                <i class="fas fa-leaf text-success me-2"></i>
+                                Environmental Impact
+                            </h3>
+                            <div class="impact-details">
+                                <div class="mb-4">
+                                    <h4 class="h5 mb-2">Carbon Footprint</h4>
+                                    <p class="mb-0">{{ product.carbon_footprint }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <h4 class="h5 mb-2">Environmental Impact</h4>
+                                    <p class="mb-0">{{ product.environmental_impact }}</p>
+                                </div>
+                                <div class="mb-4">
+                                    <h4 class="h5 mb-2">Recycling Code</h4>
+                                    <p class="mb-0">{{ product.recycling_code }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alternatives Section -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-4">
+                        <i class="fas fa-lightbulb text-success me-2"></i>
+                        Eco-Friendly Alternatives
+                    </h3>
+                    <div class="row">
+                        {% for alternative in product.alternatives %}
+                        <div class="col-md-4 mb-3">
+                            <div class="alternative-card">
+                                <i class="fas fa-leaf text-success me-2"></i>
+                                {{ alternative }}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="text-center mb-4">
+                <a href="{{ url_for('main.scan') }}" class="btn btn-success btn-lg me-2">
+                    <i class="fas fa-camera me-2"></i>Scan Another Product
+                </a>
+                <a href="{{ url_for('main.search') }}" class="btn btn-outline-success btn-lg">
+                    <i class="fas fa-search me-2"></i>Search Products
+                </a>
             </div>
         </div>
     </div>
-    {% endif %}
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-    // Add animation to cards
-    document.addEventListener('DOMContentLoaded', function() {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            card.classList.add('animate__animated', 'animate__fadeIn');
-            card.style.animationDelay = `${index * 0.1}s`;
-        });
-    });
-</script>
+<style>
+.product-image {
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.no-image-placeholder {
+    height: 300px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+}
+
+.sustainability-score .progress {
+    background-color: #e9ecef;
+    border-radius: 12px;
+}
+
+.sustainability-score .progress-bar {
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.alternative-card {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.alternative-card:hover {
+    transform: translateY(-2px);
+    background-color: #e9ecef;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.badge {
+    padding: 0.5rem 1rem;
+}
+
+.recycling-tips li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.recycling-tips li:last-child {
+    border-bottom: none;
+}
+
+.impact-details > div {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.impact-details > div:last-child {
+    margin-bottom: 0;
+}
+</style>
 {% endblock %}

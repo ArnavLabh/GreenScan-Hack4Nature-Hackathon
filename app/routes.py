@@ -24,18 +24,17 @@ def index():
     return render_template('index.html')
 
 @main.route('/scan')
+@login_required
 def scan():
     return render_template('scan.html')
 
 @main.route('/search')
+@login_required
 def search():
-    query = request.args.get('q', '').lower()
-    products = load_products()
-    if query:
-        products = [p for p in products if query in p['name'].lower()]
-    return render_template('search.html', products=products, query=query)
+    return render_template('search.html')
 
 @main.route('/result', methods=['POST'])
+@login_required
 def result():
     barcode = request.form.get('barcode')
     if not barcode:
@@ -49,80 +48,73 @@ def result():
         flash('Product not found', 'warning')
         return redirect(url_for('main.scan'))
     
-    if current_user.is_authenticated:
-        # Record the scan
-        scan = Scan(
-            user_id=current_user.id,
-            product_name=product['name'],
-            barcode=barcode,
-            recyclable=product['category'] in ['Glass', 'Paper']  # Consider glass and paper as recyclable
-        )
-        db.session.add(scan)
-        db.session.commit()
+    # Record the scan
+    scan = Scan(
+        user_id=current_user.id,
+        product_name=product['name'],
+        barcode=barcode,
+        recyclable=product['category'] in ['Glass', 'Paper']  # Consider glass and paper as recyclable
+    )
+    db.session.add(scan)
+    db.session.commit()
     
     return render_template('result.html', product=product)
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
-    
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        remember = request.form.get('remember') == 'on'
-        
         user = User.query.filter_by(email=email).first()
+        
         if user and user.check_password(password):
-            login_user(user, remember=remember)
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('main.index'))
-        else:
-            flash('Invalid email or password', 'danger')
-    
+            login_user(user)
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('main.index'))
+        flash('Invalid email or password', 'danger')
     return render_template('login.html')
 
 @main.route('/signup', methods=['GET', 'POST'])
 def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.index'))
-    
     if request.method == 'POST':
         name = request.form.get('name')
         email = request.form.get('email')
         password = request.form.get('password')
-        confirm_password = request.form.get('confirm_password')
-        
-        if password != confirm_password:
-            flash('Passwords do not match', 'danger')
-            return render_template('signup.html')
         
         if User.query.filter_by(email=email).first():
             flash('Email already registered', 'danger')
-            return render_template('signup.html')
+            return redirect(url_for('main.signup'))
         
         user = User(name=name, email=email)
         user.set_password(password)
-        
         db.session.add(user)
         db.session.commit()
         
         login_user(user)
+        flash('Account created successfully!', 'success')
         return redirect(url_for('main.index'))
-    
     return render_template('signup.html')
 
 @main.route('/logout')
 @login_required
 def logout():
     logout_user()
+    flash('Logged out successfully!', 'success')
     return redirect(url_for('main.index'))
 
 @main.route('/profile')
 @login_required
 def profile():
-    user_scans = Scan.query.filter_by(user_id=current_user.id).order_by(Scan.scanned_at.desc()).all()
-    return render_template('profile.html', user=current_user, scans=user_scans)
+    scans = Scan.query.filter_by(user_id=current_user.id).order_by(Scan.timestamp.desc()).all()
+    scan_count = len(scans)
+    recyclable_count = sum(1 for scan in scans if scan.recyclable)
+    non_recyclable_count = scan_count - recyclable_count
+    
+    return render_template('profile.html', 
+                         scans=scans,
+                         scan_count=scan_count,
+                         recyclable_count=recyclable_count,
+                         non_recyclable_count=non_recyclable_count)
 
 @main.route('/settings')
 @login_required
@@ -154,25 +146,20 @@ def api_scan():
 @main.route('/api/stats')
 @login_required
 def get_stats():
-    # Get user's scan history
-    scans = Scan.query.filter_by(user_id=current_user.id).order_by(Scan.scanned_at.desc()).all()
-    
-    # Calculate statistics
+    scans = Scan.query.filter_by(user_id=current_user.id).order_by(Scan.timestamp.desc()).all()
     total_scans = len(scans)
     recyclable_count = sum(1 for scan in scans if scan.recyclable)
-    recycling_impact = round((recyclable_count / total_scans * 100) if total_scans > 0 else 0)
     
-    # Format recent activity
     recent_activity = []
-    for scan in scans[:5]:  # Only get the 5 most recent scans
+    for scan in scans[:5]:
         recent_activity.append({
             'product_name': scan.product_name,
             'recyclable': scan.recyclable,
-            'time': scan.scanned_at.strftime('%Y-%m-%d %H:%M')
+            'time': scan.timestamp.strftime('%Y-%m-%d %H:%M')
         })
     
     return jsonify({
         'total_scans': total_scans,
-        'recycling_impact': recycling_impact,
+        'recycling_impact': recyclable_count,
         'recent_activity': recent_activity
     })

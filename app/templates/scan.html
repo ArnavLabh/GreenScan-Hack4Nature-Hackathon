@@ -1,247 +1,149 @@
 {% extends "base.html" %}
 
-{% block title %}Scan - GreenScan{% endblock %}
+{% block title %}Scan Product - GreenScan{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
+<div class="container py-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
             <div class="card shadow-sm">
                 <div class="card-body p-4">
-                    <h2 class="text-center mb-4">Scan Barcode</h2>
+                    <h2 class="h3 mb-4 text-center">
+                        <i class="fas fa-camera me-2"></i>Scan Product
+                    </h2>
                     
-                    <div class="text-center mb-4">
-                        <div id="camera-container" class="mb-3" style="display: none;">
-                            <video id="camera" class="img-fluid rounded" style="max-height: 400px;"></video>
-                        </div>
-                        <div id="loading" class="text-center" style="display: none;">
-                            <div class="spinner-border text-success" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-2">Processing image...</p>
-                        </div>
-                        <div id="error-message" class="alert alert-danger" style="display: none;"></div>
-                    </div>
-
-                    <div class="d-flex justify-content-center gap-2 mb-4">
-                        <button id="startCamera" class="btn btn-success">
-                            <i class="fas fa-camera me-2"></i>Start Camera
-                        </button>
-                        <button id="captureImage" class="btn btn-primary" style="display: none;">
-                            <i class="fas fa-camera-retro me-2"></i>Capture
-                        </button>
-                        <button id="uploadImage" class="btn btn-warning">
-                            <i class="fas fa-upload me-2"></i>Upload Image
-                        </button>
-                        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-                    </div>
-
-                    <div class="text-center">
-                        <p class="text-muted">Or enter barcode manually:</p>
-                        <form id="barcodeForm" method="POST" action="{{ url_for('main.result') }}" class="d-flex justify-content-center gap-2">
-                            <input type="text" name="barcode" id="barcode" class="form-control" style="max-width: 200px;" 
-                                   pattern="[0-9]+" required placeholder="Enter barcode">
-                            <button type="submit" class="btn btn-success">
-                                <i class="fas fa-search me-2"></i>Search
+                    <!-- Scanner View -->
+                    <div id="interactive" class="viewport mb-4"></div>
+                    
+                    <!-- Manual Input -->
+                    <div class="mb-4">
+                        <label for="barcode" class="form-label">Or enter barcode manually:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="barcode" placeholder="Enter barcode">
+                            <button class="btn btn-success" type="button" onclick="submitBarcode()">
+                                <i class="fas fa-search me-1"></i>Search
                             </button>
-                        </form>
+                        </div>
                     </div>
 
-                    <div class="mt-4">
-                        <h5 class="text-center mb-3">Scanning Tips</h5>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <i class="fas fa-lightbulb text-warning fa-2x mb-2"></i>
-                                    <p class="mb-0">Ensure good lighting</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <i class="fas fa-hand-paper text-info fa-2x mb-2"></i>
-                                    <p class="mb-0">Hold steady</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="text-center">
-                                    <i class="fas fa-barcode text-success fa-2x mb-2"></i>
-                                    <p class="mb-0">Focus on barcode</p>
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Scanner Controls -->
+                    <div class="text-center">
+                        <button id="startButton" class="btn btn-success me-2" onclick="startScanner()">
+                            <i class="fas fa-play me-1"></i>Start Scanner
+                        </button>
+                        <button id="stopButton" class="btn btn-danger" onclick="stopScanner()" disabled>
+                            <i class="fas fa-stop me-1"></i>Stop Scanner
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.viewport {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+#interactive.viewport > canvas, #interactive.viewport > video {
+    max-width: 100%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+canvas.drawing, canvas.drawingBuffer {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+</style>
+
 {% endblock %}
 
 {% block scripts %}
-<script src="https://unpkg.com/html5-qrcode"></script>
 <script>
-let html5QrCode = null;
+let scannerRunning = false;
 
-document.addEventListener('DOMContentLoaded', function() {
-    const startCameraBtn = document.getElementById('startCamera');
-    const captureImageBtn = document.getElementById('captureImage');
-    const uploadImageBtn = document.getElementById('uploadImage');
-    const imageInput = document.getElementById('imageInput');
-    const cameraContainer = document.getElementById('camera-container');
-    const camera = document.getElementById('camera');
-    const loading = document.getElementById('loading');
-    const errorMessage = document.getElementById('error-message');
-    const barcodeForm = document.getElementById('barcodeForm');
-
-    // Initialize QR code scanner once
-    function initializeScanner() {
-        if (html5QrCode === null) {
-            html5QrCode = new Html5Qrcode("camera-container");
+function startScanner() {
+    if (scannerRunning) return;
+    
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector("#interactive"),
+            constraints: {
+                facingMode: "environment"
+            },
+        },
+        decoder: {
+            readers: ["ean_reader", "ean_8_reader", "code_128_reader", "code_39_reader", "upc_reader", "upc_e_reader"]
         }
-        return html5QrCode;
-    }
-
-    startCameraBtn.addEventListener('click', async function() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { 
-                    facingMode: 'environment',
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
-                } 
-            });
-            camera.srcObject = stream;
-            cameraContainer.style.display = 'block';
-            startCameraBtn.style.display = 'none';
-            captureImageBtn.style.display = 'inline-block';
-            
-            // Initialize QR code scanner
-            const scanner = initializeScanner();
-            scanner.start(
-                { deviceId: stream.getVideoTracks()[0].getSettings().deviceId },
-                {
-                    fps: 10,
-                    qrbox: { width: 250, height: 250 },
-                    formatsToSupport: [
-                        Html5QrcodeSupportedFormats.EAN_13,
-                        Html5QrcodeSupportedFormats.UPC_A,
-                        Html5QrcodeSupportedFormats.UPC_E,
-                        Html5QrcodeSupportedFormats.EAN_8,
-                        Html5QrcodeSupportedFormats.CODE_128,
-                        Html5QrcodeSupportedFormats.CODE_39,
-                        Html5QrcodeSupportedFormats.CODABAR
-                    ]
-                },
-                onScanSuccess,
-                onScanFailure
-            );
-        } catch (err) {
-            showError('Error accessing camera: ' + err.message);
+    }, function(err) {
+        if (err) {
+            console.error(err);
+            alert('Error starting scanner: ' + err);
+            return;
         }
-    });
-
-    function onScanSuccess(decodedText) {
-        if (html5QrCode) {
-            html5QrCode.stop();
-        }
-        document.getElementById('barcode').value = decodedText;
-        barcodeForm.submit();
-    }
-
-    function onScanFailure(error) {
-        // Handle scan failure silently
-        console.warn(`QR code scan failed: ${error}`);
-    }
-
-    captureImageBtn.addEventListener('click', function() {
-        const canvas = document.createElement('canvas');
-        canvas.width = camera.videoWidth;
-        canvas.height = camera.videoHeight;
-        canvas.getContext('2d').drawImage(camera, 0, 0);
         
-        canvas.toBlob(function(blob) {
-            processImage(blob);
-        }, 'image/jpeg', 0.8); // Reduced quality for faster processing
+        Quagga.start();
+        scannerRunning = true;
+        document.getElementById('startButton').disabled = true;
+        document.getElementById('stopButton').disabled = false;
     });
 
-    uploadImageBtn.addEventListener('click', function() {
-        imageInput.click();
-    });
-
-    imageInput.addEventListener('change', function(e) {
-        if (e.target.files && e.target.files[0]) {
-            processImage(e.target.files[0]);
+    Quagga.onDetected(function(result) {
+        if (result.codeResult.code) {
+            document.getElementById('barcode').value = result.codeResult.code;
+            submitBarcode();
+            stopScanner();
         }
     });
+}
 
-    function processImage(file) {
-        loading.style.display = 'block';
-        errorMessage.style.display = 'none';
-        
-        // Stop any ongoing scanning
-        if (html5QrCode) {
-            html5QrCode.stop();
-        }
+function stopScanner() {
+    if (!scannerRunning) return;
+    
+    Quagga.stop();
+    scannerRunning = false;
+    document.getElementById('startButton').disabled = false;
+    document.getElementById('stopButton').disabled = true;
+}
 
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const img = new Image();
-            img.onload = function() {
-                // Resize image if too large
-                const maxSize = 1024; // Maximum dimension
-                let width = img.width;
-                let height = img.height;
-                
-                if (width > maxSize || height > maxSize) {
-                    if (width > height) {
-                        height = Math.round((height * maxSize) / width);
-                        width = maxSize;
-                    } else {
-                        width = Math.round((width * maxSize) / height);
-                        height = maxSize;
-                    }
-                }
-
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-                
-                // Try to decode barcode
-                const scanner = initializeScanner();
-                scanner.scanFile(canvas.toDataURL('image/jpeg', 0.8), true)
-                    .then(decodedText => {
-                        document.getElementById('barcode').value = decodedText;
-                        barcodeForm.submit();
-                    })
-                    .catch(err => {
-                        showError('No barcode found in image. Please try again.');
-                    })
-                    .finally(() => {
-                        loading.style.display = 'none';
-                    });
-            };
-            img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
+function submitBarcode() {
+    const barcode = document.getElementById('barcode').value.trim();
+    if (!barcode) {
+        alert('Please enter a barcode');
+        return;
     }
 
-    function showError(message) {
-        errorMessage.textContent = message;
-        errorMessage.style.display = 'block';
-        loading.style.display = 'none';
-    }
+    // Create and submit form
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = "{{ url_for('main.result') }}";
 
-    // Cleanup when leaving the page
-    window.addEventListener('beforeunload', function() {
-        if (html5QrCode) {
-            html5QrCode.stop();
-        }
-        if (camera.srcObject) {
-            camera.srcObject.getTracks().forEach(track => track.stop());
-        }
-    });
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = 'barcode';
+    input.value = barcode;
+
+    form.appendChild(input);
+    document.body.appendChild(form);
+    form.submit();
+}
+
+// Stop scanner when leaving page
+window.addEventListener('beforeunload', function() {
+    if (scannerRunning) {
+        stopScanner();
+    }
 });
 </script>
 {% endblock %}
