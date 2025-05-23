@@ -13,8 +13,20 @@ main = Blueprint('main', __name__)
 # Load products data
 def load_products():
     try:
-        with open('data/products.json', 'r') as f:
-            return json.load(f)
+        # Try to load from the data directory first
+        file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'products.json')
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return json.load(f)
+        
+        # If not found in data directory, try the root directory
+        file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'products.json')
+        if os.path.exists(file_path):
+            with open(file_path, 'r') as f:
+                return json.load(f)
+                
+        print("Warning: products.json not found")
+        return []
     except Exception as e:
         print(f"Error loading products: {e}")
         return []
@@ -49,32 +61,45 @@ def search():
                          query=query,
                          category=category)
 
-@main.route('/result', methods=['POST'])
+@main.route('/result', methods=['GET', 'POST'])
 @login_required
 def result():
-    barcode = request.form.get('barcode')
-    if not barcode:
-        flash('No barcode provided', 'danger')
+    try:
+        if request.method == 'POST':
+            barcode = request.form.get('barcode')
+        else:
+            barcode = request.args.get('barcode')
+            
+        if not barcode:
+            flash('No barcode provided', 'danger')
+            return redirect(url_for('main.scan'))
+        
+        products = load_products()
+        product = next((p for p in products if str(p['barcode']) == str(barcode)), None)
+        
+        if not product:
+            flash('Product not found', 'warning')
+            return redirect(url_for('main.scan'))
+        
+        # Record the scan
+        try:
+            scan = Scan(
+                user_id=current_user.id,
+                product_name=product['name'],
+                barcode=barcode,
+                recyclable=product['category'] in ['Glass', 'Paper']  # Consider glass and paper as recyclable
+            )
+            db.session.add(scan)
+            db.session.commit()
+        except Exception as e:
+            # Log the error but continue to show the result
+            print(f"Error recording scan: {e}")
+        
+        return render_template('result.html', product=product)
+    except Exception as e:
+        print(f"Error in result route: {e}")
+        flash('An error occurred while processing your request', 'danger')
         return redirect(url_for('main.scan'))
-    
-    products = load_products()
-    product = next((p for p in products if str(p['barcode']) == str(barcode)), None)
-    
-    if not product:
-        flash('Product not found', 'warning')
-        return redirect(url_for('main.scan'))
-    
-    # Record the scan
-    scan = Scan(
-        user_id=current_user.id,
-        product_name=product['name'],
-        barcode=barcode,
-        recyclable=product['category'] in ['Glass', 'Paper']  # Consider glass and paper as recyclable
-    )
-    db.session.add(scan)
-    db.session.commit()
-    
-    return render_template('result.html', product=product)
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
