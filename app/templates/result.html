@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="container py-4">
-    <div class="row">
-        <div class="col-lg-10 mx-auto">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
             {% if product %}
             <!-- Product Header -->
             <div class="card shadow-sm mb-4">
@@ -37,63 +37,62 @@
                 </div>
             </div>
 
-            <!-- Recycling Status -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body p-4">
-                    <h3 class="h4 mb-4">
-                        <i class="fas fa-recycle me-2"></i>Recycling Status
-                    </h3>
-                    <div class="recycling-status">
-                        <div class="status-icon mb-3">
-                            <i class="fas fa-{{ 'recycle' if product.recyclability == 'recyclable' else 'times-circle' }} fa-3x"></i>
-                        </div>
-                        <h4 class="text-center mb-3">
-                            {{ 'Recyclable' if product.recyclability == 'recyclable' else 'Not Recyclable' }}
-                        </h4>
-                        {% if product.recyclability == 'recyclable' %}
-                        <div class="instruction-steps">
-                            {% for step in product.recycling_instructions %}
-                            <div class="instruction-step">
-                                <div class="step-number">{{ loop.index }}</div>
-                                <div class="step-content">{{ step }}</div>
-                            </div>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <div class="alert alert-warning mb-0">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            This product is not recyclable. Please follow the disposal instructions below.
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="col-md-6">
-            <!-- Disposal Information -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body p-4">
-                    <h3 class="h4 mb-4">
-                        <i class="fas fa-trash-alt me-2"></i>Disposal Information
-                    </h3>
-                    <div class="disposal-info">
-                        <p>{{ product.disposal_information }}</p>
-                        
-                        {% if product.hazardous %}
-                        <div class="alert alert-danger mt-3">
-                            <i class="fas fa-exclamation-circle me-2"></i>
-                            This product contains hazardous materials. Please handle with care and follow local hazardous waste disposal guidelines.
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Details -->
+            <!-- Product Information -->
             <div class="row">
                 <!-- Left Column -->
+                <div class="col-md-6">
+                    <!-- Recycling Status -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h3 class="h4 mb-4">
+                                <i class="fas fa-recycle me-2"></i>Recycling Status
+                            </h3>
+                            <div class="recycling-status">
+                                <div class="status-icon mb-3">
+                                    <i class="fas fa-{{ 'recycle' if product.recyclability == 'recyclable' else 'times-circle' }} fa-3x"></i>
+                                </div>
+                                <h4 class="text-center mb-3">
+                                    {{ 'Recyclable' if product.recyclability == 'recyclable' else 'Not Recyclable' }}
+                                </h4>
+                                {% if product.recyclability == 'recyclable' %}
+                                <div class="instruction-steps">
+                                    {% for step in product.recycling_instructions %}
+                                    <div class="instruction-step">
+                                        <div class="step-number">{{ loop.index }}</div>
+                                        <div class="step-content">{{ step }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                                {% else %}
+                                <div class="alert alert-warning mb-0">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    This product is not recyclable. Please follow the disposal instructions below.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Disposal Information -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-body p-4">
+                            <h3 class="h4 mb-4">
+                                <i class="fas fa-trash-alt me-2"></i>Disposal Information
+                            </h3>
+                            <div class="disposal-info">
+                                <p>{{ product.disposal_information }}</p>
+                                
+                                {% if product.hazardous %}
+                                <div class="alert alert-danger mt-3">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    This product contains hazardous materials. Please handle with care and follow local hazardous waste disposal guidelines.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="col-md-6">
                     <!-- Product Information -->
                     <div class="card shadow-sm mb-4">
