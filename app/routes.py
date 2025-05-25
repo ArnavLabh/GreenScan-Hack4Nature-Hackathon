@@ -89,7 +89,7 @@ def result():
                 user_id=current_user.id,
                 product_name=product['name'],
                 barcode=barcode,
-                recyclable=product['category'] in ['Glass', 'Paper']  # Consider glass and paper as recyclable
+                recyclable=product['recyclability'] == 'recyclable'  # Use the actual recyclability field
             )
             db.session.add(scan)
             db.session.commit()
